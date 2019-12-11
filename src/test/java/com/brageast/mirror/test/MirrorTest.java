@@ -1,6 +1,6 @@
-package com.brageast.test;
+package com.brageast.mirror.test;
 
-import com.brageast.Mirror;
+import com.brageast.mirror.Mirror;
 
 public class MirrorTest {
     public static void main(String[] args) {

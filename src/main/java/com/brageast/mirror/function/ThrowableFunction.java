@@ -1,4 +1,4 @@
-package com.brageast.function;
+package com.brageast.mirror.function;
 
 @FunctionalInterface
 public interface ThrowableFunction {

@@ -1,4 +1,4 @@
-package com.brageast.util;
+package com.brageast.mirror.util;
 
 public class Null {
     private Class<?> aClass;

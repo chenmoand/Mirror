@@ -1,12 +1,12 @@
-package com.brageast.reflect;
+package com.brageast.mirror.reflect;
 
-import com.brageast.Mirror;
-import com.brageast.function.ThrowableFunction;
-import com.brageast.function.ToValueFunction;
-import com.brageast.util.Null;
+import com.brageast.mirror.Mirror;
+import com.brageast.mirror.function.ThrowableFunction;
+import com.brageast.mirror.function.ToValueFunction;
+import com.brageast.mirror.interfaces.MirrorType;
+import com.brageast.mirror.util.ClassUtil;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 public class MirrorMethod<T> implements MirrorType<T> {
 
@@ -44,22 +44,10 @@ public class MirrorMethod<T> implements MirrorType<T> {
     }
 
     public MirrorMethod<T> doObjTypes(Object[] objects) {
-        if (objects != null) {
-            int len = objects.length;
-            Class<?>[] classes = new Class[len];
-            for (int i = 0; i < len; ++i) {
-                Objects.requireNonNull(objects[i], "请不要直接传入null, 请用com.brageast.util.Null代替");
-                if (objects[i] instanceof Null) {
-                    Null nul = (Null) objects[i];
-                    classes[i] = nul.getTypeClass();
-                    objects[i] = null;
-                } else {
-                    classes[i] = objects[i].getClass();
-                }
-            }
-            this.classTypes = classes;
-            this.objects = objects;
-        }
+
+        this.classTypes = ClassUtil.getClassTypes(objects);
+        this.objects = objects;
+
         return this;
     }
 

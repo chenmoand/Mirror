@@ -1,4 +1,4 @@
-package com.brageast.test;
+package com.brageast.mirror.test;
 
 public class User {
     private String name;

@@ -1,8 +1,8 @@
-package com.brageast;
+package com.brageast.mirror;
 
-import com.brageast.function.FilterFunction;
-import com.brageast.function.ThrowableFunction;
-import com.brageast.reflect.MirrorMethod;
+import com.brageast.mirror.function.FilterFunction;
+import com.brageast.mirror.function.ThrowableFunction;
+import com.brageast.mirror.reflect.MirrorMethod;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
