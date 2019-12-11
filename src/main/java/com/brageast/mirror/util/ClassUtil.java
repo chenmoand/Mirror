@@ -20,6 +20,10 @@ public abstract class ClassUtil {
                     Null nul = (Null) objects[i];
                     classes[i] = nul.getTypeClass();
                     objects[i] = null;
+                } else if(objects[i] instanceof Convert) {
+                    Convert convert = (Convert) objects[i];
+                    classes[i] = convert.getTypeClass();
+                    objects[i] = convert.getTypeValue();
                 } else {
                     classes[i] = objects[i].getClass();
                 }
