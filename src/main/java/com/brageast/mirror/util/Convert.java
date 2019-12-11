@@ -3,9 +3,9 @@ package com.brageast.mirror.util;
 public class Convert {
 
     public static final Class<?>[] BASE_TYPES = {
-        int.class, byte.class, short.class,
-        long.class, double.class, boolean.class,
-        float.class, char.class
+            int.class, byte.class, short.class,
+            long.class, double.class, boolean.class,
+            float.class, char.class
     };
 
     private int index;
@@ -17,36 +17,43 @@ public class Convert {
     }
 
 
-    public Convert is(int i){
+    public static Convert is(int i) {
         return new Convert(i, 0);
     }
-    public Convert is(byte b){
+
+    public static Convert is(byte b) {
         return new Convert(b, 1);
     }
-    public Convert is(short s){
+
+    public static Convert is(short s) {
         return new Convert(s, 2);
     }
-    public Convert is(long l){
+
+    public static Convert is(long l) {
         return new Convert(l, 3);
     }
-    public Convert is(double d){
+
+    public static Convert is(double d) {
         return new Convert(d, 4);
     }
-    public Convert is(boolean bol){
+
+    public static Convert is(boolean bol) {
         return new Convert(bol, 5);
     }
-    public Convert is(float f){
+
+    public static Convert is(float f) {
         return new Convert(f, 6);
     }
-    public Convert is(char c){
+
+    public static Convert is(char c) {
         return new Convert(c, 7);
     }
-
 
 
     public Class<?> getTypeClass() {
         return BASE_TYPES[index];
     }
+
     public Object getTypeValue() {
         return this.value;
     }
