@@ -1,5 +1,6 @@
 package com.brageast.mirror.test;
 
+
 import com.brageast.mirror.Mirror;
 
 public class MirrorTest {
@@ -11,5 +12,9 @@ public class MirrorTest {
         Mirror.just(user)
                 .allMethod(mirrorMethod -> mirrorMethod.getTarget().getName() == "toString")
                 .forEach(userMirrorMethod -> userMirrorMethod.invoke(System.out::print));
+
+        Mirror.just(user)
+                .withReturnTypeMethod(String.class)
+                .forEach(mm -> mm.invoke(System.out::println));
     }
 }

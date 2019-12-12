@@ -36,10 +36,23 @@ public final class Mirror<T> {
         return mirror;
     }
 
+    /**
+     * 实例化一个Mirror反射类
+     *
+     * @param url 反射类的地址
+     * @return Mirror<?>类
+     */
     public static Mirror<?> just(String url) {
         return just(url, null);
     }
 
+    /**
+     * 实例化一个Mirror反射类
+     *
+     * @param url               反射类的地址
+     * @param throwableFunction 遇到异常的解决方式
+     * @return Mirror<?>类
+     */
     public static Mirror<?> just(String url, ThrowableFunction throwableFunction) {
         Mirror<?> mirror = null;
         try {
@@ -111,6 +124,26 @@ public final class Mirror<T> {
             ThrowableFunction.isNull(e, throwableFunction);
         }
         return mirrorField;
+    }
+
+
+    /**
+     * 找到所有对于一个返回类的集合
+     *
+     * @param returnType 判断的方法返回的class是否一致
+     * @param <C>        class的类型
+     * @return 一个包装MirrorMethod的集合
+     */
+    public <C> List<MirrorMethod<T, C>> withReturnTypeMethod(Class<C> returnType) {
+        final Method[] declaredMethods = typeClass.getDeclaredMethods();
+        List<MirrorMethod<T, C>> mirrorMethods = new ArrayList<>();
+        for (Method method : declaredMethods) {
+            MirrorMethod<T, C> mirrorMethod = new MirrorMethod<>(type, this, method);
+            if (mirrorMethod.eqReturnType(returnType)) {
+                mirrorMethods.add(mirrorMethod);
+            }
+        }
+        return mirrorMethods;
     }
 
 }

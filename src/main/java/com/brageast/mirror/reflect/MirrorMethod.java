@@ -17,6 +17,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     private Object[] objects;
 
 
+
     public MirrorMethod(T initObj, Mirror<T> mirror, String name, Object[] objects, ThrowableFunction throwableFunction) {
         this.initObj = initObj;
         this.mirror = mirror;
@@ -41,6 +42,10 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
 
     public static <E, W> MirrorMethod<E, W> of(E initType, Mirror<E> mirror, Method method) {
         return new MirrorMethod<>(initType, mirror, method);
+    }
+
+    public boolean eqReturnType(Class<?> returnType) {
+        return this.target.getReturnType() == returnType;
     }
 
     public MirrorMethod<T, C> doObjTypes(Object[] objects) {

@@ -3,7 +3,7 @@ package com.brageast.mirror.test;
 public class User {
     private String name;
     private int age;
-    private String sex;
+    private String sex = "未设置";
 
     public User() {
 

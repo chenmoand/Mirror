@@ -9,6 +9,7 @@ import java.lang.reflect.AccessibleObject;
 public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> implements MirrorType<T> {
     // 实例对象的类
     protected T initObj;
+
     // 传进的Mirror
     protected Mirror<T> mirror;
 
