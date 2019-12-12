@@ -12,4 +12,5 @@ public class Null {
     public Class<?> getTypeClass() {
         return aClass;
     }
+
 }

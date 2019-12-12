@@ -2,7 +2,7 @@
 
 > 现处于```Beta```阶段, 只完善了部分功能
 >
-> 现在的反射工具大部分都是从遍历类, 它只会给你一个例如```Field```的集合, 我们想实现它的操作还是很繁琐, 也有一些类似的工具类, 但他们并不能满足, 简称不方便, 所有就诞生了```Mirror```
+> 现在的反射工具大部分都是从遍历类, 它只会给你一个例如```Field```的集合, 并不会给你接下来的操作, 我们想实现它的操作还是很繁琐, 也有一些类似的工具类, 但他们并不能满足, 简称不方便, 所有就诞生了```Mirror```
 
 ### 安装方法
 
@@ -35,7 +35,7 @@ public class MirrorTest {
 }
 ```
 
-没使用```Mirror``` 代码可读性太差
+没使用```Mirror``` 代码臃肿
 
 ```java 
  public void test() throws Exception {
@@ -58,7 +58,7 @@ public class MirrorTest {
 
 1. 假设我想传入一个方法```null```值怎吗办?
 
-   请使用```com.brageast.mirror.util.Null```中的**is()**方法
+   请使用```com.brageast.mirror.util.Null```中的is()方法
 
 2. 如果我想传入的是基本数据类型怎吗办?
 

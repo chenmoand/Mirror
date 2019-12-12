@@ -59,11 +59,11 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
 
     public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction) {
         try {
-            Object obj = null;
+            C obj = null;
             if (invObj != null) {
-                obj = target.invoke(invObj, objects);
+                obj = (C)target.invoke(invObj, objects);
             } else if (this.initObj != null) {
-                obj = target.invoke(initObj, objects);
+                obj = (C)target.invoke(initObj, objects);
             }
             ToValueFunction.isNull(obj, toValueFunction);
         } catch (Exception e) {
