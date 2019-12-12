@@ -2,14 +2,14 @@ package com.brageast.mirror.test;
 
 public class User {
     private String name;
-    private Integer age;
+    private int age;
     private String sex;
 
     public User() {
 
     }
 
-    public User(String name, Integer age, String sex) {
+    public User(String name, int age, String sex) {
         this.name = name;
         this.age = age;
         this.sex = sex;
@@ -23,11 +23,11 @@ public class User {
         this.name = name;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(int age) {
         this.age = age;
     }
 

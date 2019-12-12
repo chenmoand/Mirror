@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Objects;
 
 public final class Mirror<T> {
+
+    // 实例的对象
     private T type;
+    // 实例对象的类
     private Class<T> typeClass;
 
     private Mirror() {
@@ -30,14 +33,29 @@ public final class Mirror<T> {
             e.printStackTrace();
         }
         return mirror;
-
     }
-    /*public static <E> Mirror<E> just(Class<E> eClass, MirrorConstructor mirrorConstructor) {
 
-    }*/
+    public static Mirror<?> just(String url) {
+        return just(url, null);
+    }
+
+    public static Mirror<?> just(String url, ThrowableFunction throwableFunction) {
+        Mirror<?> mirror = null;
+        try {
+            Class<?> aClass = Class.forName(url);
+            mirror = new Mirror(aClass, aClass.getConstructor().newInstance());
+        } catch (Exception e) {
+            ThrowableFunction.isNull(e, throwableFunction);
+        }
+        return mirror;
+    }
 
     public static <E> Mirror<E> just(E entity) {
         return new Mirror(entity.getClass(), entity);
+    }
+
+    public Mirror<T> doOneConstructor(Object... objects) {
+        return this;
     }
 
     public List<MirrorMethod<T>> allMethod() {
@@ -48,16 +66,22 @@ public final class Mirror<T> {
         final Method[] declaredMethods = typeClass.getDeclaredMethods();
         List<MirrorMethod<T>> mirrorMethods = new ArrayList<>();
         for (Method method : declaredMethods) {
-            MirrorMethod<T> mirrorMethod = new MirrorMethod<>(type,this, method);
-            if (filter == null) {
-                mirrorMethods.add(mirrorMethod);
-            } else if (filter.doFilter(mirrorMethod)) {
+            MirrorMethod<T> mirrorMethod = new MirrorMethod<>(type, this, method);
+            if (filter == null || filter.doFilter(mirrorMethod) ) {
                 mirrorMethods.add(mirrorMethod);
             }
         }
         return mirrorMethods;
     }
 
+    /**
+     * 对一个类的方法进行操作
+     *
+     * @param name 方法名
+     * @param throwableFunction 异常处理
+     * @param objects 方法所需字段
+     * @return
+     */
     public MirrorMethod<T> doOneMethod(String name, ThrowableFunction throwableFunction, Object... objects) {
         Objects.requireNonNull(name, "方法名称不能为空");
         MirrorMethod<T> mirrorMethod = null;
