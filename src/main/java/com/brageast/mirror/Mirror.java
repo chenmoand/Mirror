@@ -2,6 +2,7 @@ package com.brageast.mirror;
 
 import com.brageast.mirror.function.FilterFunction;
 import com.brageast.mirror.function.ThrowableFunction;
+import com.brageast.mirror.reflect.MirrorField;
 import com.brageast.mirror.reflect.MirrorMethod;
 
 import java.lang.reflect.Method;
@@ -58,16 +59,16 @@ public final class Mirror<T> {
         return this;
     }
 
-    public List<MirrorMethod<T>> allMethod() {
+    public List<MirrorMethod<T, Object>> allMethod() {
         return allMethod(Objects::nonNull);
     }
 
-    public List<MirrorMethod<T>> allMethod(FilterFunction<MirrorMethod<T>> filter) {
+    public List<MirrorMethod<T, Object>> allMethod(FilterFunction<MirrorMethod<T, Object>> filter) {
         final Method[] declaredMethods = typeClass.getDeclaredMethods();
-        List<MirrorMethod<T>> mirrorMethods = new ArrayList<>();
+        List<MirrorMethod<T, Object>> mirrorMethods = new ArrayList<>();
         for (Method method : declaredMethods) {
-            MirrorMethod<T> mirrorMethod = new MirrorMethod<>(type, this, method);
-            if (filter == null || filter.doFilter(mirrorMethod) ) {
+            MirrorMethod<T, Object> mirrorMethod = new MirrorMethod<>(type, this, method);
+            if (filter == null || filter.doFilter(mirrorMethod)) {
                 mirrorMethods.add(mirrorMethod);
             }
         }
@@ -77,14 +78,14 @@ public final class Mirror<T> {
     /**
      * 对一个类的方法进行操作
      *
-     * @param name 方法名
+     * @param name              方法名
      * @param throwableFunction 异常处理
-     * @param objects 方法所需字段
+     * @param objects           方法所需字段
      * @return
      */
-    public MirrorMethod<T> doOneMethod(String name, ThrowableFunction throwableFunction, Object... objects) {
+    public MirrorMethod<T, Object> doOneMethod(String name, ThrowableFunction throwableFunction, Object... objects) {
         Objects.requireNonNull(name, "方法名称不能为空");
-        MirrorMethod<T> mirrorMethod = null;
+        MirrorMethod<T, Object> mirrorMethod = null;
         try {
             mirrorMethod = MirrorMethod.of(type, this, name, objects);
         } catch (Exception e) {
@@ -93,8 +94,23 @@ public final class Mirror<T> {
         return mirrorMethod;
     }
 
-    public MirrorMethod<T> doOneMethod(String name, Object... objects) {
+    public MirrorMethod<T, Object> doOneMethod(String name, Object... objects) {
         return this.doOneMethod(name, null, objects);
+    }
+
+    public <C> MirrorField<T, C> doOneField(String name, C objValue) {
+        return this.doOneField(name, null, objValue);
+    }
+
+    public <C> MirrorField<T, C> doOneField(String name, ThrowableFunction throwableFunction, C objValue) {
+        Objects.requireNonNull(name, "方法名称不能为空");
+        MirrorField<T, C> mirrorField = null;
+        try {
+            mirrorField = MirrorField.of(this.type, this, name, objValue);
+        } catch (Exception e) {
+            ThrowableFunction.isNull(e, throwableFunction);
+        }
+        return mirrorField;
     }
 
 }

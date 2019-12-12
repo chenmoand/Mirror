@@ -8,7 +8,13 @@ import com.brageast.mirror.util.ClassUtil;
 
 import java.lang.reflect.Method;
 
-public class MirrorMethod<T> extends AbstractMirrorType<T, Method> {
+public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
+
+    /**
+     *  传入的类型和类型的类
+     */
+    private Class<?>[] classTypes;
+    private Object[] objects;
 
 
     public MirrorMethod(T initObj, Mirror<T> mirror, String name, Object[] objects, ThrowableFunction throwableFunction) {
@@ -29,15 +35,15 @@ public class MirrorMethod<T> extends AbstractMirrorType<T, Method> {
         this.target = method;
     }
 
-    public static <E> MirrorMethod<E> of(E initType, Mirror<E> mirror, String name, Object[] objects) {
+    public static <E, W> MirrorMethod<E, W> of(E initType, Mirror<E> mirror, String name, Object[] objects) {
         return new MirrorMethod<>(initType, mirror, name, objects, null);
     }
 
-    public static <E> MirrorMethod<E> of(E initType, Mirror<E> mirror, Method method) {
+    public static <E, W> MirrorMethod<E, W> of(E initType, Mirror<E> mirror, Method method) {
         return new MirrorMethod<>(initType, mirror, method);
     }
 
-    public MirrorMethod<T> doObjTypes(Object[] objects) {
+    public MirrorMethod<T, C> doObjTypes(Object[] objects) {
 
         this.classTypes = ClassUtil.getClassTypes(objects);
         this.objects = objects;
@@ -45,21 +51,8 @@ public class MirrorMethod<T> extends AbstractMirrorType<T, Method> {
         return this;
     }
 
-    @Override
-    public Mirror<T> invoke() {
-        return this.invoke(null, null, null);
-    }
 
-
-    public Mirror<T> invoke(Object invObj, ToValueFunction<Object> toValueFunction) {
-        return this.invoke(invObj, null, toValueFunction);
-    }
-
-    public Mirror<T> invoke(ToValueFunction<Object> toValueFunction) {
-        return this.invoke(null, null, toValueFunction);
-    }
-
-    public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<Object> toValueFunction) {
+    public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction) {
         try {
             Object obj = null;
             if (invObj != null) {
