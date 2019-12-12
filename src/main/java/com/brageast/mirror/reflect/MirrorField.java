@@ -10,7 +10,9 @@ import java.lang.reflect.Field;
 
 public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
 
+    // 修改属性的类
     private Class<C> objClass;
+    // 修改属性的值
     private C objValue;
 
     public MirrorField(T initObj, Mirror<T> mirror, String name, C objValue, ThrowableFunction throwableFunction) {
@@ -46,17 +48,34 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         return new MirrorField<>(initObj, mirror, field);
     }
 
+    /**
+     * 判断是否与FieldType相等
+     *
+     * @param fieldType
+     * @return
+     */
+    public boolean eqFieldType(Class<?> fieldType) {
+        return this.target.getType() == fieldType;
+    }
 
+    /**
+     * 执行这个属性的set get方法
+     *
+     * @param invObj            执行的对象, 如果为空, 讲使用默认的对象
+     * @param throwableFunction 异常处理
+     * @param toValueFunction   返回值处理
+     * @return
+     */
     @Override
     public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction) {
         try {
-            Object obj = null;
+            C obj = null;
             if (invObj != null) {
                 target.set(invObj, objValue);
-                obj = target.get(invObj);
+                obj = (C) target.get(invObj);
             } else if (this.initObj != null) {
                 target.set(initObj, objValue);
-                obj = target.get(initObj);
+                obj = (C) target.get(initObj);
             }
             ToValueFunction.isNull(obj, toValueFunction);
         } catch (Exception e) {

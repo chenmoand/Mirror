@@ -5,6 +5,7 @@ import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.reflect.MirrorField;
 import com.brageast.mirror.reflect.MirrorMethod;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,12 @@ public final class Mirror<T> {
         return allMethod(Objects::nonNull);
     }
 
+    /**
+     * 查询所有类方法
+     *
+     * @param filter 过滤器
+     * @return
+     */
     public List<MirrorMethod<T, Object>> allMethod(FilterFunction<MirrorMethod<T, Object>> filter) {
         final Method[] declaredMethods = typeClass.getDeclaredMethods();
         List<MirrorMethod<T, Object>> mirrorMethods = new ArrayList<>();
@@ -115,6 +122,16 @@ public final class Mirror<T> {
         return this.doOneField(name, null, objValue);
     }
 
+
+    /**
+     * 对一个属性所操作
+     *
+     * @param name              属性名称
+     * @param throwableFunction 异常处理
+     * @param objValue          属性值
+     * @param <C>               属性类型
+     * @return
+     */
     public <C> MirrorField<T, C> doOneField(String name, ThrowableFunction throwableFunction, C objValue) {
         Objects.requireNonNull(name, "方法名称不能为空");
         MirrorField<T, C> mirrorField = null;
@@ -138,12 +155,31 @@ public final class Mirror<T> {
         final Method[] declaredMethods = typeClass.getDeclaredMethods();
         List<MirrorMethod<T, C>> mirrorMethods = new ArrayList<>();
         for (Method method : declaredMethods) {
-            MirrorMethod<T, C> mirrorMethod = new MirrorMethod<>(type, this, method);
+            MirrorMethod<T, C> mirrorMethod = new MirrorMethod<>(this.type, this, method);
             if (mirrorMethod.eqReturnType(returnType)) {
                 mirrorMethods.add(mirrorMethod);
             }
         }
         return mirrorMethods;
+    }
+
+    /**
+     * 找到所有是这个类的属性集合
+     *
+     * @param fieldType 要判断的符合属性的类
+     * @param <C>       class的类型
+     * @return 一个包装MirrorField的集合
+     */
+    public <C> List<MirrorField<T, C>> withTypeField(Class<C> fieldType) {
+        final Field[] fields = typeClass.getDeclaredFields();
+        List<MirrorField<T, C>> mirrorFields = new ArrayList<>();
+        for (Field field : fields) {
+            MirrorField<T, C> mirrorField = new MirrorField<>(this.type, this, field);
+            if (mirrorField.eqFieldType(fieldType)) {
+                mirrorFields.add(mirrorField);
+            }
+        }
+        return mirrorFields;
     }
 
 }

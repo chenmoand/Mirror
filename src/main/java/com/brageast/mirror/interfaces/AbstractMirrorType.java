@@ -13,8 +13,8 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
     // 传进的Mirror
     protected Mirror<T> mirror;
 
-
     protected M target;
+
 
     @Override
     public Mirror<T> invoke() {

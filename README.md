@@ -1,27 +1,65 @@
-## Mirror - 方便的反射工具
+# Mirror - 方便的反射工具
 
-> 现处于```Beta```阶段, 可能出现不肯抗拒的**Bug**
+> 现处于```Beta```阶段, 只完善了部分功能
+>
+> 现在的反射工具大部分都是从遍历类, 它只会给你一个例如```Field```的集合, 我们想实现它的操作还是很繁琐, 也有一些类似的工具类, 但他们并不能满足, 简称不方便, 所有就诞生了```Mirror```
 
-#### 如何是使用?
+### 安装方法
 
-* 假设方法接收的参数是基础类型
+* 方法一
 
-  请使用``` com.brageast.mirror.util.Convert.is()```方法 
+  ```git clone https://github.com/chenmoand/Mirror.git```
 
-* 我想传入一个```null```值怎么办
+* 方法二
 
-  请使用``` com.brageast.mirror.util.Null.is(Class<T> cls)```方法
+  .....
+
+### 使用方法 / 对比
+
+使用```Mirror```享受纵享丝滑操作
 
 ```java
 import com.brageast.mirror.Mirror;
-import static com.brageast.mirror.util.Convert.is;
 
-Mirror.just(user) // 可以传入一个 实例化的对象 字符串 一个类
-    .doOneMethod("setName", "沉默")
-    .invoke()
-    .doOneMethod("setAge", is(18))
-    .invoke()
-    .doOneMethod("setSex", "男")
-    .invoke();
+public class MirrorTest {
+    public static void main(String[] args) {
+        User user = new User();
+        Mirror.just(user) // 传入的实例对象
+                .doOneField("name", "哈哈哈") //操作一个方法
+                .invoke(); // 执行
+
+        Mirror.just(user)
+                .withReturnTypeMethod(String.class) // 获取返回String的方法
+                .forEach(mm -> mm.invoke(System.out::println)); // 循环打印执行
+    }
+}
 ```
 
+没使用```Mirror``` 代码可读性太差
+
+```java 
+ public void test() throws Exception {
+        User user = new User();
+        Class<? extends User> aClass = user.getClass();
+        Field name = aClass.getDeclaredField("name");
+        name.setAccessible(true);
+        name.set(user, "哈哈哈");
+        Field[] fields = aClass.getFields();
+        for (Field field : fields) {
+            if (field.getType() == String.class) {
+                System.out.println(field.get(user));
+            }
+        }
+
+}
+```
+
+### 注意事项
+
+1. 假设我想传入一个方法```null```值怎吗办?
+
+   请使用```com.brageast.mirror.util.Null```中的**is()**方法
+
+2. 如果我想传入的是基本数据类型怎吗办?
+
+   请使用```com.brageast.mirror.util.Convert```中的is()方法, 因为在解析的时候int类型会自动解析成```Integer```类型,防止一个方法接收的基本类型, 导致找不到方法或者属性;
