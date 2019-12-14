@@ -1,6 +1,7 @@
 package com.brageast.mirror.test;
 
 public class User {
+    @Boom("零三零三六零")
     private String name;
     private int age;
     private String sex = "未设置";

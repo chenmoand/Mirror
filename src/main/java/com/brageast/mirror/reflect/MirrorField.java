@@ -4,8 +4,10 @@ import com.brageast.mirror.Mirror;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.interfaces.AbstractMirrorType;
+import com.brageast.mirror.interfaces.MirrorEntity;
 import com.brageast.mirror.util.ClassUtil;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
@@ -14,6 +16,11 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     private Class<C> objClass;
     // 修改属性的值
     private C objValue;
+
+    public MirrorField(Field target) {
+        super(target);
+        this.target.setAccessible(true);
+    }
 
     public MirrorField(T initObj, Mirror<T> mirror, String name, C objValue, ThrowableFunction throwableFunction) {
         this.initObj = initObj;
@@ -31,6 +38,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         this.initObj = initObj;
         this.mirror = mirror;
         this.target = field;
+        this.target.setAccessible(true);
     }
 
     public MirrorField<T, C> doObjType(C objValue) {
@@ -39,6 +47,10 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         return this;
     }
 
+    @SafeVarargs
+    public final MirrorField<T, C> doAnnotations(Class<? extends Annotation>... annotations) {
+        return (MirrorField<T, C>) super.doAnnotations(annotations);
+    }
 
     public static <E, H> MirrorField<E, H> of(E initObj, Mirror<E> mirror, String name, H objValue) {
         return new MirrorField<>(initObj, mirror, name, objValue, null);
@@ -82,5 +94,46 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
             ThrowableFunction.isNull(e, throwableFunction);
         }
         return this.mirror;
+    }
+
+
+    @Override
+    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
+        // 先将Annotation 值注入进去
+        Mirror.just(mirrorEntity)
+                .allField()
+                .forEach(mirrorField -> this.onMirrorFieldAnnotation(invObj, mirrorField));
+
+        try {
+            if(invObj == null) {
+                invoke0(this.initObj, mirrorEntity);
+            } else {
+                invoke0(invObj, mirrorEntity);
+            }
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return this.mirror;
+    }
+
+    private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws IllegalAccessException {
+        Object obj, value;
+        obj = this.target.get(invObj);
+        value = mirrorEntity.onFieldModify(obj);
+        this.target.set(invObj, value);
+        obj = this.target.get(invObj);
+        mirrorEntity.onModifyResult(obj);
+    }
+
+
+    private <M, H> void onMirrorFieldAnnotation(Object invObj, MirrorField<M, H> mirrorField) {
+        Class<M> declaringClass = (Class<M>) mirrorField.getTarget().getType();
+        Annotation annotation = this.annotationHashMap.get(declaringClass);
+        if(annotation != null) {
+            mirrorField.doObjType((H)annotation);
+            mirrorField.invoke(invObj, (ToValueFunction<H>) null);
+        }
     }
 }

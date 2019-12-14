@@ -73,6 +73,22 @@ public final class Mirror<T> {
         return this;
     }
 
+    public List<MirrorField<T, Object>> allField() {
+        return allField(null);
+    }
+
+    public List<MirrorField<T, Object>> allField(FilterFunction<MirrorField<T, Object>> filter) {
+        final Field[] declaredFields = typeClass.getDeclaredFields();
+        List<MirrorField<T, Object>> mirrorFields = new ArrayList<>();
+        for(Field field : declaredFields) {
+            MirrorField<T, Object> mirrorField = new MirrorField<>(type, this, field);
+            if (filter == null || filter.doFilter(mirrorField)) {
+                mirrorFields.add(mirrorField);
+            }
+        }
+        return mirrorFields;
+    }
+
     public List<MirrorMethod<T, Object>> allMethod() {
         return allMethod(Objects::nonNull);
     }

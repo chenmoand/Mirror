@@ -4,6 +4,7 @@ import com.brageast.mirror.Mirror;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.interfaces.AbstractMirrorType;
+import com.brageast.mirror.interfaces.MirrorEntity;
 import com.brageast.mirror.util.ClassUtil;
 
 import java.lang.reflect.Method;
@@ -73,4 +74,8 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     }
 
 
+    @Override
+    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
+        return null;
+    }
 }
