@@ -20,6 +20,7 @@ public class User {
         return name;
     }
 
+    @Boom("哈哈哈哈")
     public void setName(String name) {
         this.name = name;
     }

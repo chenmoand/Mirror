@@ -10,7 +10,7 @@
 
   ```git clone https://github.com/chenmoand/Mirror.git```
 
-* 方法二
+* 方法二 (暂时不可用
 
   ``` xml
   <dependency>
@@ -22,52 +22,94 @@
   
   
 
-### 使用方法 / 对比
+### 使用方法
 
-使用```Mirror```享受纵享丝滑操作
+本方法都以操作, user 是一个普通的JavaBean;
 
 ```java
-import com.brageast.mirror.Mirror;
+User user = new User();
+```
+操作```User.class```的构造器
 
-public class MirrorTest {
-    public static void main(String[] args) {
-        User user = new User();
-        Mirror.just(user) // 传入的实例对象
-                .doOneField("name", "哈哈哈") //操作一个方法
-                .invoke(); // 执行
-
-        Mirror.just(user)
-                .withReturnTypeMethod(String.class) // 获取返回String的方法
-                .forEach(mm -> mm.invoke(System.out::println)); // 循环打印执行
-    }
-}
+```java
+User user1 = Mirror.just(user)
+    .doConstructor("兰陵王", Convert.conver(16), "女") // 预操作
+    .newInstance() // 实例化这个
+    // .off() 如果是私有的请打开off()
+    .getInstance(); // 获得这个实例
 ```
 
-没使用```Mirror``` 代码臃肿
+操作```user```的一个属性
 
-```java 
- public void test() throws Exception {
-        User user = new User();
-        Class<? extends User> aClass = user.getClass();
-        Field name = aClass.getDeclaredField("name");
-        name.setAccessible(true);
-        name.set(user, "哈哈哈");
-        Field[] fields = aClass.getFields();
-        for (Field field : fields) {
-            if (field.getType() == String.class) {
-                System.out.println(field.get(user));
-            }
-        }
-
-}
+```java
+Mirror.just(user) // 传入的实例对象
+    .doOneField("name", "哈哈哈") //操作一个属性
+    // .off() 如果是私有的请打开off()
+    .invoke(); // 执行
 ```
+
+操作```user```的一个方法
+
+```java
+Mirror.just(user)
+    .doOneMethod("setName", "java") //获得一个方法
+    // .off() 如果是私有的请打开off()
+    .invoke(); // 执行
+```
+
+返回值为```String.class```的集合
+
+```java
+Mirror.just(user)
+    .withReturnTypeMethod(String.class); 
+//返回一个List 数组 可以通过forEach操作
+```
+
+无视掉所有权限, 不管是构造器还是方法或者属性
+
+```java
+Mirror.just(user)
+    .defaultOffAll(); //相当于为每个都执行off()操作
+```
+
+获得所有属性类型是```String.class```的属性
+
+```java
+Mirror.just(user)
+    .withTypeField(String.class); //返回一个List
+```
+
+属性注解操作
+
+```java
+Mirror.just(user)
+                .defaultOffAll()
+                .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
+                .forEach(mirrorField ->
+                        mirrorField.invoke(new MirrorEntity() {
+                            private Boom boom; // 自动将上面筛选的注解实例注入
+
+                            @Override
+                            public Object onFieldModify(Object entity) {
+                                System.out.println(boom);
+                                return boom.value();
+                            }
+
+                            @Override
+                            public void onModifyResult(Object entity) {
+                                System.out.println(entity);
+                            }
+                 }));
+```
+
+更多骚操作看你们了
 
 ### 注意事项
 
 1. 假设我想传入一个方法```null```值怎吗办?
 
-   请使用```com.brageast.mirror.util.Null```中的is()方法
+   请使用```com.brageast.mirror.util.Null```中的isNull()方法
 
 2. 如果我想传入的是基本数据类型怎吗办?
 
-   请使用```com.brageast.mirror.util.Convert```中的is()方法, 因为在解析的时候int类型会自动解析成```Integer```类型,防止一个方法接收的基本类型, 导致找不到方法或者属性;
+   请使用```com.brageast.mirror.util.Convert```中的cover()方法, 因为在默认解析的时候```int```类型会自动解析成```Integer```类型,使用这个方法可以保留原先属性;

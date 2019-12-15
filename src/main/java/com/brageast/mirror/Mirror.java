@@ -36,8 +36,8 @@ public final class Mirror<T> {
         return this;
     }
 
-    public MirrorConstructor<T> doConstructor(T t, Object[] objects) {
-        return new MirrorConstructor<>(t, this, objects);
+    public MirrorConstructor<T> doConstructor(Object... objects) {
+        return new MirrorConstructor<>(this.type, this, objects);
     }
 
     private Mirror() {

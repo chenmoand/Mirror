@@ -3,6 +3,7 @@ package com.brageast.mirror.test;
 
 import com.brageast.mirror.Mirror;
 import com.brageast.mirror.interfaces.MirrorEntity;
+import com.brageast.mirror.util.Convert;
 
 import java.lang.reflect.Field;
 
@@ -35,9 +36,28 @@ public class MirrorTest {
                                 System.out.println(entity);
                             }
                         }));
-        System.out.println(user);
+
+        Mirror.just(user)
+                .doOneMethod("setName", "java")
+                .invoke();
 
 
+        User user1 = Mirror.just(user)
+                .doConstructor("兰陵王", Convert.conver(16), "女") // 预操作
+                .newInstance() // 实例化这个
+                .getInstance(); // 获得这个实例
+
+        Mirror.just(user)
+                .withReturnTypeMethod(String.class);
+
+        System.out.println(user1);
+
+
+        Mirror.just(user)
+                .defaultOffAll();
+
+        Mirror.just(user)
+                .withTypeField(String.class);
 
     }
 
