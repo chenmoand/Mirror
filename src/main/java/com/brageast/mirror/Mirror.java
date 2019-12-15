@@ -2,6 +2,7 @@ package com.brageast.mirror;
 
 import com.brageast.mirror.function.FilterFunction;
 import com.brageast.mirror.function.ThrowableFunction;
+import com.brageast.mirror.reflect.MirrorConstructor;
 import com.brageast.mirror.reflect.MirrorField;
 import com.brageast.mirror.reflect.MirrorMethod;
 
@@ -34,6 +35,11 @@ public final class Mirror<T> {
         accessible = true;
         return this;
     }
+
+    public MirrorConstructor<T> doConstructor(T t, Object[] objects) {
+        return new MirrorConstructor<>(t, this, objects);
+    }
+
     private Mirror() {
 
     }
@@ -46,7 +52,7 @@ public final class Mirror<T> {
     public static <E> Mirror<E> just(Class<E> eClass) {
         Mirror<E> mirror = null;
         try {
-            mirror = new Mirror(eClass, eClass.getConstructor().newInstance());
+            mirror = new Mirror<>(eClass, eClass.getConstructor().newInstance());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,7 +102,7 @@ public final class Mirror<T> {
     public List<MirrorField<T, Object>> allField(FilterFunction<MirrorField<T, Object>> filter) {
         final Field[] declaredFields = typeClass.getDeclaredFields();
         List<MirrorField<T, Object>> mirrorFields = new ArrayList<>();
-        for(Field field : declaredFields) {
+        for (Field field : declaredFields) {
             MirrorField<T, Object> mirrorField = new MirrorField<>(type, this, field);
             if (filter == null || filter.doFilter(mirrorField)) {
                 mirrorFields.add(mirrorField);
