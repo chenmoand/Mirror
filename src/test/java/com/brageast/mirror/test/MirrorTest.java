@@ -18,11 +18,11 @@ public class MirrorTest {
                 .forEach(mm -> mm.invoke(System.out::println));
 
         Mirror.just(user)
+                .defaultOffAll()
                 .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
                 .forEach(mirrorField ->
-                        mirrorField
-                        .invoke(new MirrorEntity() {
-                            private Boom boom;
+                        mirrorField.invoke(new MirrorEntity() {
+                            private Boom boom; // 自动将上面筛选的注解实例注入
 
                             @Override
                             public Object onFieldModify(Object entity) {

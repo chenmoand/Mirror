@@ -21,6 +21,18 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
 
     protected HashMap<Class<? extends Annotation>, Annotation> annotationHashMap = new HashMap<>();
 
+
+    protected void accessible0(){
+        if(mirror.defaultAccessible()) {
+            target.setAccessible(true);
+        }
+    }
+
+    public AbstractMirrorType<T, M, C> off() {
+        target.setAccessible(true);
+        return this;
+    }
+
     public AbstractMirrorType() {
 
     }
@@ -35,10 +47,19 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         }
     }
 
+    /**
+     * 返回Mirror
+     *
+     * @return
+     */
+    public Mirror<T> and() {
+        return this.mirror;
+    }
+
 
     /**
      * 判断是否有没有注解
-     * 有返会注解,没用返回null
+     * 有返会true,没用返回false
      *
      * @param annotation
      * @param <E>

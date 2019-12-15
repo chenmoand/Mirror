@@ -18,6 +18,22 @@ public final class Mirror<T> {
     // 实例对象的类
     private Class<T> typeClass;
 
+    // 权限
+    private boolean accessible = false;
+
+    public boolean defaultAccessible() {
+        return accessible;
+    }
+
+    /**
+     * 默认所有关闭操作权限检查
+     *
+     * @return
+     */
+    public Mirror<T> defaultOffAll() {
+        accessible = true;
+        return this;
+    }
     private Mirror() {
 
     }
@@ -196,6 +212,15 @@ public final class Mirror<T> {
             }
         }
         return mirrorFields;
+    }
+
+    /**
+     * 得到操作的实例
+     *
+     * @return
+     */
+    public T getInstance() {
+        return type;
     }
 
 }

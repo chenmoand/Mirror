@@ -20,6 +20,7 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
         return null;
     }
 
+
     @Override
     public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
         return null;

@@ -17,9 +17,14 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     // 修改属性的值
     private C objValue;
 
+    @Override
+    public MirrorField<T, C> off() {
+        return (MirrorField<T, C>) super.off();
+    }
+
     public MirrorField(Field target) {
         super(target);
-        this.target.setAccessible(true);
+        accessible0();
     }
 
     public MirrorField(T initObj, Mirror<T> mirror, String name, C objValue, ThrowableFunction throwableFunction) {
@@ -28,7 +33,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         doObjType(objValue);
         try {
             this.target = initObj.getClass().getDeclaredField(name);
-            this.target.setAccessible(true);
+            accessible0();
         } catch (NoSuchFieldException e) {
             ThrowableFunction.isNull(e, throwableFunction);
         }
@@ -38,7 +43,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         this.initObj = initObj;
         this.mirror = mirror;
         this.target = field;
-        this.target.setAccessible(true);
+        accessible0();
     }
 
     public MirrorField<T, C> doObjType(C objValue) {
@@ -101,11 +106,12 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
         // 先将Annotation 值注入进去
         Mirror.just(mirrorEntity)
+                .defaultOffAll() // 关闭所有权限检查
                 .allField()
                 .forEach(mirrorField -> this.onMirrorFieldAnnotation(invObj, mirrorField));
 
         try {
-            if(invObj == null) {
+            if (invObj == null) {
                 invoke0(this.initObj, mirrorEntity);
             } else {
                 invoke0(invObj, mirrorEntity);
@@ -131,8 +137,8 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     private <M, H> void onMirrorFieldAnnotation(Object invObj, MirrorField<M, H> mirrorField) {
         Class<M> declaringClass = (Class<M>) mirrorField.getTarget().getType();
         Annotation annotation = this.annotationHashMap.get(declaringClass);
-        if(annotation != null) {
-            mirrorField.doObjType((H)annotation);
+        if (annotation != null) {
+            mirrorField.doObjType((H) annotation);
             mirrorField.invoke(invObj, (ToValueFunction<H>) null);
         }
     }
