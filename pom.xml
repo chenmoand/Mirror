@@ -6,7 +6,16 @@
 
     <groupId>com.brageast</groupId>
     <artifactId>mirror</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/chenmoand/mirror</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>

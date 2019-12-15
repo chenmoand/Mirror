@@ -12,7 +12,15 @@
 
 * 方法二
 
-  .....
+  ``` xml
+  <dependency>
+    <groupId>com.brageast</groupId>
+    <artifactId>mirror</artifactId>
+    <version>1.0</version>
+  </dependency>
+  ```
+  
+  
 
 ### 使用方法 / 对比
 
