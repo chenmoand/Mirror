@@ -3,6 +3,7 @@ package com.brageast.mirror.interfaces;
 import com.brageast.mirror.Mirror;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
+import com.brageast.mirror.reflect.MirrorField;
 import com.brageast.mirror.util.ClassUtil;
 
 import java.lang.annotation.Annotation;
@@ -83,7 +84,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
 
     @Override
     public Mirror<T> invoke() {
-        return this.invoke(null, null, null);
+        return this.invoke(null, (ThrowableFunction)null, null);
     }
 
     @Override
@@ -101,6 +102,28 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
     @Override
     public Mirror<T> invoke(MirrorEntity mirrorEntity) {
         return this.invoke(null, mirrorEntity);
+    }
+
+    @Override
+    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
+        return this.invoke(invObj, mirrorEntity, null);
+    }
+
+    protected void setMirrorEntityAnnotation(Object invObj, MirrorEntity mirrorEntity) {
+        // 先将Annotation 值注入进去
+        Mirror.just(mirrorEntity)
+                .defaultOffAll() // 关闭所有权限检查
+                .allField()
+                .forEach(mirrorField -> this.onMirrorFieldAnnotation(invObj, mirrorField));
+    }
+
+    protected  <M, H> void onMirrorFieldAnnotation(Object invObj, MirrorField<M, H> mirrorField) {
+        Class<M> declaringClass = (Class<M>) mirrorField.getTarget().getType();
+        Annotation annotation = this.annotationHashMap.get(declaringClass);
+        if (annotation != null) {
+            mirrorField.doObjType((H) annotation);
+            mirrorField.invoke(invObj, (ToValueFunction<H>) null);
+        }
     }
 
     public M getTarget() {

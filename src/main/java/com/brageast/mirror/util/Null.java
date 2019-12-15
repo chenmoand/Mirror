@@ -5,7 +5,7 @@ public class Null {
     private Null(Class<?> aClass) {
         this.aClass = aClass;
     }
-    public static Null is(Class<?> aClass) {
+    public static Null isNull(Class<?> aClass) {
         return new Null(aClass);
     }
 

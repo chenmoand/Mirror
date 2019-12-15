@@ -7,6 +7,8 @@ import com.brageast.mirror.interfaces.AbstractMirrorType;
 import com.brageast.mirror.interfaces.MirrorEntity;
 import com.brageast.mirror.util.ClassUtil;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
@@ -63,6 +65,11 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     }
 
     @Override
+    public MirrorMethod<T, C> doAnnotations(Class<? extends Annotation>... annotations) {
+        return (MirrorMethod<T, C>) super.doAnnotations(annotations);
+    }
+
+    @Override
     public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction) {
         try {
             C obj = null;
@@ -80,7 +87,25 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
 
 
     @Override
-    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
-        return null;
+    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
+        setMirrorEntityAnnotation(invObj, mirrorEntity);
+        try {
+            if(invObj == null ) {
+                invoke0(this.initObj, mirrorEntity);
+            } else {
+                invoke0(invObj, mirrorEntity);
+            }
+        } catch (Exception e) {
+            ThrowableFunction.isNull(e, throwableFunction);
+        }
+
+        return this.mirror;
+    }
+    private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws Exception {
+        Object obj;
+        Object[] value;
+        value = mirrorEntity.onMethodModify();
+        obj = this.target.invoke(invObj, value);
+        mirrorEntity.onModifyResult(obj);
     }
 }

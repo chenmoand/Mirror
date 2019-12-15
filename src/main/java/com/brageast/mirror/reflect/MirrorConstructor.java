@@ -75,9 +75,8 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
         return null;
     }
 
-
     @Override
-    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
+    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
         try {
             throw new ProhibitedUseException("禁止使用此方法");
         } catch (ProhibitedUseException e) {

@@ -103,13 +103,8 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
 
 
     @Override
-    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
-        // 先将Annotation 值注入进去
-        Mirror.just(mirrorEntity)
-                .defaultOffAll() // 关闭所有权限检查
-                .allField()
-                .forEach(mirrorField -> this.onMirrorFieldAnnotation(invObj, mirrorField));
-
+    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
+        setMirrorEntityAnnotation(invObj, mirrorEntity);
         try {
             if (invObj == null) {
                 invoke0(this.initObj, mirrorEntity);
@@ -118,7 +113,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
             }
 
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            ThrowableFunction.isNull(e, throwableFunction);
         }
 
         return this.mirror;
@@ -133,13 +128,4 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         mirrorEntity.onModifyResult(obj);
     }
 
-
-    private <M, H> void onMirrorFieldAnnotation(Object invObj, MirrorField<M, H> mirrorField) {
-        Class<M> declaringClass = (Class<M>) mirrorField.getTarget().getType();
-        Annotation annotation = this.annotationHashMap.get(declaringClass);
-        if (annotation != null) {
-            mirrorField.doObjType((H) annotation);
-            mirrorField.invoke(invObj, (ToValueFunction<H>) null);
-        }
-    }
 }
