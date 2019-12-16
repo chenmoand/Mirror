@@ -59,6 +59,23 @@ public class MirrorTest {
         Mirror.just(user)
                 .withTypeField(String.class);
 
+        Mirror.just(user)
+                .doOneMethod("setName")
+                .doAnnotations(Boom.class)
+                .invoke(new MirrorEntity() {
+                    private Boom boom;
+
+                    @Override
+                    public Object[] onMethodModify() {
+                        return new Object[]{Convert.conver(boom.num())}; //设置方法参数
+                    }
+
+                    @Override
+                    public void onModifyResult(Object entity) {
+                        System.out.println(entity); //得到返回
+                    }
+                });
+
     }
 
     public void test() throws Exception {

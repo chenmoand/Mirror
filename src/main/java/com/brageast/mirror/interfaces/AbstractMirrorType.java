@@ -121,7 +121,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         Class<M> declaringClass = (Class<M>) mirrorField.getTarget().getType();
         Annotation annotation = this.annotationHashMap.get(declaringClass);
         if (annotation != null) {
-            mirrorField.doObjType((H) annotation);
+            mirrorField.doParameter((H) annotation);
             mirrorField.invoke(invObj, (ToValueFunction<H>) null);
         }
     }

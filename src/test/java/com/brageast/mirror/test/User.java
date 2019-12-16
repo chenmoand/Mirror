@@ -29,6 +29,7 @@ public class User {
         return age;
     }
 
+    @Boom(num = 2)
     public void setAge(int age) {
         this.age = age;
     }

@@ -1,8 +1,6 @@
 # Mirror - 方便的反射工具
 
-> 现处于```Beta```阶段, 只完善了部分功能
->
-> 现在的反射工具大部分都是从遍历类, 它只会给你一个例如```Field```的集合, 并不会给你接下来的操作, 我们想实现它的操作还是很繁琐, 也有一些类似的工具类, 但他们并不能满足, 简称不方便, 所有就诞生了```Mirror```
+> 用最少的操作完成你想要的结果
 
 ### 安装方法
 
@@ -83,23 +81,44 @@ Mirror.just(user)
 
 ```java
 Mirror.just(user)
-                .defaultOffAll()
-                .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
-                .forEach(mirrorField ->
-                        mirrorField.invoke(new MirrorEntity() {
-                            private Boom boom; // 自动将上面筛选的注解实例注入
+    .defaultOffAll() // 关闭所有权限验证
+    .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
+    .forEach(mirrorField ->
+             mirrorField.invoke(new MirrorEntity() {
+                 private Boom boom; // 自动将上面筛选的注解实例注入
 
-                            @Override
-                            public Object onFieldModify(Object entity) {
-                                System.out.println(boom);
-                                return boom.value();
-                            }
+                 @Override
+                 public Object onFieldModify(Object entity) {
+                     System.out.println(boom);
+                     return boom.value();
+                 }
 
-                            @Override
-                            public void onModifyResult(Object entity) {
-                                System.out.println(entity);
-                            }
-                 }));
+                 @Override
+                 public void onModifyResult(Object entity) {
+                     System.out.println(entity);
+                 }
+             }));
+```
+
+方法注解操作
+
+```java
+Mirror.just(user)
+    .doOneMethod("setName") // 获得setName这个操作
+    .doAnnotations(Boom.class) // 因为这个是对一个方法的操作 可自行传入多个注解类
+    .invoke(new MirrorEntity() {
+        private Boom boom; //获得刚才判断的注解实例, 如果没用则为null
+
+        @Override
+        public Object[] onMethodModify() {
+            return new Object[]{Convert.conver(boom.num())}; //设置方法参数
+        }
+
+        @Override
+        public void onModifyResult(Object entity) {
+            System.out.println(entity); //得到返回
+        }
+    });
 ```
 
 更多骚操作看你们了
@@ -108,8 +127,8 @@ Mirror.just(user)
 
 1. 假设我想传入一个方法```null```值怎吗办?
 
-   请使用```com.brageast.mirror.util.Null```中的isNull()方法
+   请使用```com.brageast.mirror.util.Null```中的**isNull()**方法
 
 2. 如果我想传入的是基本数据类型怎吗办?
 
-   请使用```com.brageast.mirror.util.Convert```中的cover()方法, 因为在默认解析的时候```int```类型会自动解析成```Integer```类型,使用这个方法可以保留原先属性;
+   请使用```com.brageast.mirror.util.Convert```中的**cover()**方法, 因为在默认解析的时候```int```类型会自动解析成```Integer```类型,使用这个方法可以保留原先属性;

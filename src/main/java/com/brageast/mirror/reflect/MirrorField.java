@@ -30,7 +30,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     public MirrorField(T initObj, Mirror<T> mirror, String name, C objValue, ThrowableFunction throwableFunction) {
         this.initObj = initObj;
         this.mirror = mirror;
-        doObjType(objValue);
+        doParameter(objValue);
         try {
             this.target = initObj.getClass().getDeclaredField(name);
             accessible0();
@@ -46,7 +46,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         accessible0();
     }
 
-    public MirrorField<T, C> doObjType(C objValue) {
+    public MirrorField<T, C> doParameter(C objValue) {
         this.objClass = (Class<C>) ClassUtil.getClassTypes(new Object[]{objValue})[0];
         this.objValue = objValue;
         return this;

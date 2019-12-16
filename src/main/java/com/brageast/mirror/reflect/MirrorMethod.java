@@ -32,7 +32,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     public MirrorMethod(T initObj, Mirror<T> mirror, String name, Object[] objects, ThrowableFunction throwableFunction) {
         this.initObj = initObj;
         this.mirror = mirror;
-        doObjTypes(objects);
+        doParameter(objects);
         try {
             this.target = initObj.getClass().getDeclaredMethod(name, classTypes);
             accessible0();
@@ -60,7 +60,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
         return this.target.getReturnType() == returnType;
     }
 
-    public MirrorMethod<T, C> doObjTypes(Object... objects) {
+    public MirrorMethod<T, C> doParameter(Object... objects) {
 
         this.classTypes = ClassUtil.getClassTypes(objects);
         this.objects = objects;
@@ -109,9 +109,8 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
 
     private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws Exception {
         Object obj;
-        Object[] value;
-        value = mirrorEntity.onMethodModify();
-        obj = this.target.invoke(invObj, value);
+        doParameter(mirrorEntity.onMethodModify());
+        obj = this.target.invoke(invObj, this.objects);
         mirrorEntity.onModifyResult(obj);
     }
 }
