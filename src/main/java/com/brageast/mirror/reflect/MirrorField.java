@@ -12,10 +12,14 @@ import java.lang.reflect.Field;
 
 public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
 
-    // 修改属性的类
-    private Class<C> objClass;
-    // 修改属性的值
-    private C objValue;
+    /**
+     * 参数类型
+     */
+    private Class<C> parameterType;
+    /**
+     * 参数
+     */
+    private C parameter;
 
     @Override
     public MirrorField<T, C> off() {
@@ -27,10 +31,17 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         accessible0();
     }
 
-    public MirrorField(T initObj, Mirror<T> mirror, String name, C objValue, ThrowableFunction throwableFunction) {
+    /**
+     * @param initObj           实例化对象
+     * @param mirror            Mirror实例化对象
+     * @param name              属性名称
+     * @param parameter         参数
+     * @param throwableFunction 异常回调
+     */
+    public MirrorField(T initObj, Mirror<T> mirror, String name, C parameter, ThrowableFunction throwableFunction) {
         this.initObj = initObj;
         this.mirror = mirror;
-        doParameter(objValue);
+        doParameter(parameter);
         try {
             this.target = initObj.getClass().getDeclaredField(name);
             accessible0();
@@ -46,9 +57,9 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         accessible0();
     }
 
-    public MirrorField<T, C> doParameter(C objValue) {
-        this.objClass = (Class<C>) ClassUtil.getClassTypes(new Object[]{objValue})[0];
-        this.objValue = objValue;
+    public MirrorField<T, C> doParameter(C parameter) {
+        this.parameterType = (Class<C>) ClassUtil.getClassTypes(new Object[]{parameter})[0];
+        this.parameter = parameter;
         return this;
     }
 
@@ -88,10 +99,10 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         try {
             C obj = null;
             if (invObj != null) {
-                target.set(invObj, objValue);
+                target.set(invObj, parameter);
                 obj = (C) target.get(invObj);
             } else if (this.initObj != null) {
-                target.set(initObj, objValue);
+                target.set(initObj, parameter);
                 obj = (C) target.get(initObj);
             }
             ToValueFunction.isNull(obj, toValueFunction);

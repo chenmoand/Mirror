@@ -7,7 +7,7 @@ import java.util.Objects;
 public abstract class ClassUtil {
 
     /**
-     * 获取这个数组的所有Class并返回成数组格式
+     * 获取这个数组的所有Class类型并返回成数组格式
      *
      * @param objects
      * @return

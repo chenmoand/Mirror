@@ -1,5 +1,20 @@
 package com.brageast.mirror.util;
 
+/**
+ * 用于转换一个Null
+ * 例如:
+ *      Mirror.just(User.Class)
+ *          .doOneMethod("setAge", null);
+ * 如果不用会导致他会匹配一个setAge()的方法
+ * 而不会找setAge(int i)这个方法
+ * 正确方法:
+ *      Mirror.just(User.Class)
+ *          .doOneMethod("setAge", Null.isNull(int.class));
+ * 提示:
+ *      可以使用import static com.brageast.mirror.util.Null.isNull;
+ *      方式更加方便哦!
+ *
+ */
 public class Null {
     private Class<?> aClass;
     private Null(Class<?> aClass) {

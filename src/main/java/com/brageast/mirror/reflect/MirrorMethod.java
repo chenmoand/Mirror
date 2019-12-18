@@ -13,10 +13,13 @@ import java.lang.reflect.Method;
 public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
 
     /**
-     * 传入的类型和类型的类
+     * 参数类型
      */
-    private Class<?>[] classTypes;
-    private Object[] objects;
+    private Class<?>[] parameterTypes;
+    /**
+     * 参数
+     */
+    private Object[] parameters;
 
     public MirrorMethod(Method method) {
         super(method);
@@ -24,17 +27,17 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     }
 
     @Override
-    public MirrorMethod<T, C>off() {
-        return (MirrorMethod<T, C>)super.off();
+    public MirrorMethod<T, C> off() {
+        return (MirrorMethod<T, C>) super.off();
     }
 
 
-    public MirrorMethod(T initObj, Mirror<T> mirror, String name, Object[] objects, ThrowableFunction throwableFunction) {
+    public MirrorMethod(T initObj, Mirror<T> mirror, String name, Object[] parameters, ThrowableFunction throwableFunction) {
         this.initObj = initObj;
         this.mirror = mirror;
-        doParameter(objects);
+        doParameter(parameters);
         try {
-            this.target = initObj.getClass().getDeclaredMethod(name, classTypes);
+            this.target = initObj.getClass().getDeclaredMethod(name, parameterTypes);
             accessible0();
         } catch (NoSuchMethodException e) {
             ThrowableFunction.isNull(e, throwableFunction);
@@ -60,10 +63,10 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
         return this.target.getReturnType() == returnType;
     }
 
-    public MirrorMethod<T, C> doParameter(Object... objects) {
+    public MirrorMethod<T, C> doParameter(Object... parameters) {
 
-        this.classTypes = ClassUtil.getClassTypes(objects);
-        this.objects = objects;
+        this.parameterTypes = ClassUtil.getClassTypes(parameters);
+        this.parameters = parameters;
 
         return this;
     }
@@ -79,9 +82,9 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
         try {
             C obj = null;
             if (invObj != null) {
-                obj = (C) target.invoke(invObj, objects);
+                obj = (C) target.invoke(invObj, parameters);
             } else if (this.initObj != null) {
-                obj = (C) target.invoke(initObj, objects);
+                obj = (C) target.invoke(initObj, parameters);
             }
             ToValueFunction.isNull(obj, toValueFunction);
         } catch (Exception e) {
@@ -110,7 +113,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws Exception {
         Object obj;
         doParameter(mirrorEntity.onMethodModify());
-        obj = this.target.invoke(invObj, this.objects);
+        obj = this.target.invoke(invObj, this.parameters);
         mirrorEntity.onModifyResult(obj);
     }
 }

@@ -1,5 +1,19 @@
 package com.brageast.mirror.util;
 
+/**
+ * 用于转换一个基本类型
+ * 例如:
+ *      Mirror.just(User.Class)
+ *          .doOneMethod("setAge", 12);
+ * 如果不使用Convert 会把12 解析成 Integer.class类型
+ * 而方法是普通得int.class ,会导致找不到方法
+ * 正确方法:
+ *      Mirror.just(User.Class)
+ *          .doOneMethod("setAge", Convert.cover(12));
+ * 提示:
+ *      可以使用import static com.brageast.mirror.util.Null.isNull;
+ *      方式更加方便哦!
+ */
 public class Convert {
 
     public static final Class<?>[] BASE_TYPES = {
@@ -14,6 +28,7 @@ public class Convert {
     private Convert(Object value, int index) {
         this.value = value;
         this.index = index;
+
     }
 
 
@@ -49,11 +64,20 @@ public class Convert {
         return new Convert(c, 7);
     }
 
-
+    /**
+     * 得到基础类型的class
+     *
+     * @return
+     */
     public Class<?> getTypeClass() {
         return BASE_TYPES[index];
     }
 
+    /**
+     * 得到基础类型的值
+     *
+     * @return
+     */
     public Object getTypeValue() {
         return this.value;
     }

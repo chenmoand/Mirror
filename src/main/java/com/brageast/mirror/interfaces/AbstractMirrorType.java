@@ -12,19 +12,30 @@ import java.lang.reflect.Member;
 import java.util.HashMap;
 
 public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> implements MirrorType<T, C> {
-    // 实例对象的类
+
+    /**
+     * 实例对象的类
+     */
     protected T initObj;
 
-    // 传进的Mirror
+    /**
+     * 传进的Mirror
+     */
     protected Mirror<T> mirror;
 
+    /**
+     * 反射所操作的对象, 如构造器, 属性, 方法
+     */
     protected M target;
 
     protected HashMap<Class<? extends Annotation>, Annotation> annotationHashMap = new HashMap<>();
 
 
-    protected void accessible0(){
-        if(mirror.defaultAccessible()) {
+    /**
+     * 判断mirror是否设置了关闭所有权限检查
+     */
+    protected void accessible0() {
+        if (mirror.defaultAccessible()) {
             target.setAccessible(true);
         }
     }
@@ -68,7 +79,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
      */
     public <E extends Annotation> boolean hasAnntation(Class<E> annotation) {
         E declaredAnnotation = target.getDeclaredAnnotation(annotation);
-        if(declaredAnnotation != null) {
+        if (declaredAnnotation != null) {
             this.annotationHashMap.put(annotation, declaredAnnotation);
             return true;
         }
@@ -84,7 +95,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
 
     @Override
     public Mirror<T> invoke() {
-        return this.invoke(null, (ThrowableFunction)null, null);
+        return this.invoke(null, (ThrowableFunction) null, null);
     }
 
     @Override
@@ -117,7 +128,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
                 .forEach(mirrorField -> this.onMirrorFieldAnnotation(invObj, mirrorField));
     }
 
-    protected  <M, H> void onMirrorFieldAnnotation(Object invObj, MirrorField<M, H> mirrorField) {
+    protected <M, H> void onMirrorFieldAnnotation(Object invObj, MirrorField<M, H> mirrorField) {
         Class<M> declaringClass = (Class<M>) mirrorField.getTarget().getType();
         Annotation annotation = this.annotationHashMap.get(declaringClass);
         if (annotation != null) {
@@ -126,6 +137,10 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         }
     }
 
+    /**
+     * 获得反射所操作的对象, 如构造器, 属性, 方法
+     * @return
+     */
     public M getTarget() {
         return target;
     }
