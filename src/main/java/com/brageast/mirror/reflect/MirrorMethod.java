@@ -59,6 +59,12 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
         return new MirrorMethod<>(initType, mirror, method);
     }
 
+    /**
+     * 判断返回类型是否相同
+     *
+     * @param returnType 返回类
+     * @return
+     */
     public boolean eqReturnType(Class<?> returnType) {
         return this.target.getReturnType() == returnType;
     }
@@ -71,6 +77,12 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
         return this;
     }
 
+    /**
+     * 只要有这里面其中一个注解就会加入到annotationHashMap里面
+     *
+     * @param annotations
+     * @return
+     */
     @Override
     public MirrorMethod<T, C> doAnnotations(Class<? extends Annotation>... annotations) {
         return (MirrorMethod<T, C>) super.doAnnotations(annotations);

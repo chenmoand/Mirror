@@ -28,6 +28,9 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
      */
     protected M target;
 
+    /**
+     * 实例化的注解存储
+     */
     protected HashMap<Class<? extends Annotation>, Annotation> annotationHashMap = new HashMap<>();
 
 
@@ -40,6 +43,11 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         }
     }
 
+    /**
+     * 无视权限
+     *
+     * @return
+     */
     public AbstractMirrorType<T, M, C> off() {
         target.setAccessible(true);
         return this;
@@ -139,6 +147,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
 
     /**
      * 获得反射所操作的对象, 如构造器, 属性, 方法
+     *
      * @return
      */
     public M getTarget() {

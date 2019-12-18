@@ -50,6 +50,11 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         }
     }
 
+    /**
+     * @param initObj 实例
+     * @param mirror  Mirror操作类
+     * @param field   方法
+     */
     public MirrorField(T initObj, Mirror<T> mirror, Field field) {
         this.initObj = initObj;
         this.mirror = mirror;
@@ -57,14 +62,25 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         accessible0();
     }
 
+    /**
+     * 设置参数
+     *
+     * @param parameter 参数
+     * @return
+     */
     public MirrorField<T, C> doParameter(C parameter) {
         this.parameterType = (Class<C>) ClassUtil.getClassTypes(new Object[]{parameter})[0];
         this.parameter = parameter;
         return this;
     }
 
-    @SafeVarargs
-    public final MirrorField<T, C> doAnnotations(Class<? extends Annotation>... annotations) {
+    /**
+     * 只要有这里面其中一个注解就会加入到annotationHashMap里面
+     *
+     * @param annotations
+     * @return
+     */
+    public MirrorField<T, C> doAnnotations(Class<? extends Annotation>... annotations) {
         return (MirrorField<T, C>) super.doAnnotations(annotations);
     }
 
@@ -113,6 +129,14 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     }
 
 
+    /**
+     * 执行这个属性
+     *
+     * @param invObj            实例化对象
+     * @param mirrorEntity      mirror实体对象
+     * @param throwableFunction 异常处理
+     * @return
+     */
     @Override
     public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
         setMirrorEntityAnnotation(invObj, mirrorEntity);

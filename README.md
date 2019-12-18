@@ -55,7 +55,7 @@ Mirror.just(user)
     .invoke(); // 执行
 ```
 
-返回值为```String.class```的集合
+方法返回值为```String.class```的集合
 
 ```java
 Mirror.just(user)
@@ -127,8 +127,8 @@ Mirror.just(user)
 
 1. 假设我想传入一个方法```null```值怎吗办?
 
-   请使用```com.brageast.mirror.util.Null```中的**isNull()**方法
+   请使用```com.brageast.mirror.util.Null```中的```isNull()```方法
 
 2. 如果我想传入的是基本数据类型怎吗办?
 
-   请使用```com.brageast.mirror.util.Convert```中的**cover()**方法, 因为在默认解析的时候```int```类型会自动解析成```Integer```类型,使用这个方法可以保留原先属性;
+   请使用```com.brageast.mirror.util.Convert```中的```cover()```方法,因为在默认解析的时候```int```类型会自动解析成```Integer```类型,使用这个方法可以保留原先属性;

@@ -11,7 +11,7 @@ package com.brageast.mirror.util;
  *      Mirror.just(User.Class)
  *          .doOneMethod("setAge", Convert.cover(12));
  * 提示:
- *      可以使用import static com.brageast.mirror.util.Null.isNull;
+ *      可以使用import static com.brageast.mirror.util.Covert.cover;
  *      方式更加方便哦!
  */
 public class Convert {
