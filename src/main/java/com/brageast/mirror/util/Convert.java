@@ -19,7 +19,10 @@ public class Convert {
     public static final Class<?>[] BASE_TYPES = {
             int.class, byte.class, short.class,
             long.class, double.class, boolean.class,
-            float.class, char.class
+            float.class, char.class,
+            int[].class, byte[].class, short[].class,
+            long[].class, double[].class, boolean[].class,
+            float[].class, char[].class,
     };
 
     private int index;
@@ -62,6 +65,37 @@ public class Convert {
 
     public static Convert conver(char c) {
         return new Convert(c, 7);
+    }
+    public static Convert conver(int[] is) {
+        return new Convert(is, 8);
+    }
+
+    public static Convert conver(byte[] bs) {
+        return new Convert(bs, 9);
+    }
+
+    public static Convert conver(short[] ss) {
+        return new Convert(ss, 10);
+    }
+
+    public static Convert conver(long[] ls) {
+        return new Convert(ls, 11);
+    }
+
+    public static Convert conver(double[] ds) {
+        return new Convert(ds, 12);
+    }
+
+    public static Convert conver(boolean[] bols) {
+        return new Convert(bols, 13);
+    }
+
+    public static Convert conver(float[] fs) {
+        return new Convert(fs, 14);
+    }
+
+    public static Convert conver(char[] cs) {
+        return new Convert(cs, 15);
     }
 
     /**

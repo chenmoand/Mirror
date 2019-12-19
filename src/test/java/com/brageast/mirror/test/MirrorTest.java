@@ -14,7 +14,7 @@ public class MirrorTest {
                 .doOneField("name", null)
                 .invoke();
 */
-        Mirror.just(user)
+        /*Mirror.just(user)
                 .withReturnTypeMethod(String.class)
                 .forEach(mm -> mm.invoke(System.out::println));
 
@@ -57,17 +57,18 @@ public class MirrorTest {
                 .defaultOffAll();
 
         Mirror.just(user)
-                .withTypeField(String.class);
+                .withTypeField(String.class);*/
 
         Mirror.just(user)
                 .doOneMethod("setName")
+                .doParameter("hhaha")
                 .doAnnotations(Boom.class)
                 .invoke(new MirrorEntity() {
                     private Boom boom;
 
                     @Override
-                    public Object[] onMethodModify() {
-                        return new Object[]{Convert.conver(boom.num())}; //设置方法参数
+                    public Object[] onMethodModify(Object[] parameters) {
+                        return new Object[]{parameters[0] + boom.value()};
                     }
 
                     @Override
@@ -75,6 +76,8 @@ public class MirrorTest {
                         System.out.println(entity); //得到返回
                     }
                 });
+        System.out.println(user);
+        System.out.println(int[].class);
 
     }
 

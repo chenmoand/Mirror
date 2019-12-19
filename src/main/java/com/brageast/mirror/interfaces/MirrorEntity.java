@@ -19,10 +19,11 @@ public abstract class MirrorEntity {
      * 对于方法构造器的修改
      * 请重写这个方法
      *
+     * @param parameters 参数
      * @return
      */
-    public Object[] onMethodModify() {
-        return null;
+    public Object[] onMethodModify(Object[] parameters) {
+        return parameters;
     }
 
     /**

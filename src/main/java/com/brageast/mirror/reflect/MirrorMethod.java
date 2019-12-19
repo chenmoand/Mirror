@@ -32,27 +32,23 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     }
 
 
-    public MirrorMethod(T initObj, Mirror<T> mirror, String name, Object[] parameters, ThrowableFunction throwableFunction) {
+    public MirrorMethod(T initObj, Mirror<T> mirror, String name, Object[] parameters) {
         this.initObj = initObj;
         this.mirror = mirror;
+        this.name = name;
         doParameter(parameters);
-        try {
-            this.target = initObj.getClass().getDeclaredMethod(name, parameterTypes);
-            accessible0();
-        } catch (NoSuchMethodException e) {
-            ThrowableFunction.isNull(e, throwableFunction);
-        }
     }
 
     public MirrorMethod(T initObj, Mirror<T> mirror, Method method) {
         this.initObj = initObj;
         this.mirror = mirror;
+        this.name = method.getName();
         this.target = method;
         accessible0();
     }
 
     public static <E, W> MirrorMethod<E, W> of(E initType, Mirror<E> mirror, String name, Object[] objects) {
-        return new MirrorMethod<>(initType, mirror, name, objects, null);
+        return new MirrorMethod<>(initType, mirror, name, objects);
     }
 
     public static <E, W> MirrorMethod<E, W> of(E initType, Mirror<E> mirror, Method method) {
@@ -78,6 +74,19 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     }
 
     /**
+     * 生成要操作的对象
+     *
+     * @throws NoSuchMethodException
+     */
+    private void buildMethod() throws NoSuchMethodException {
+        if (this.target == null) {
+            this.target = this.initObj
+                    .getClass()
+                    .getDeclaredMethod(this.name, this.parameterTypes);
+        }
+    }
+
+    /**
      * 只要有这里面其中一个注解就会加入到annotationHashMap里面
      *
      * @param annotations
@@ -85,6 +94,11 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
      */
     @Override
     public MirrorMethod<T, C> doAnnotations(Class<? extends Annotation>... annotations) {
+        try {
+            buildMethod();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
         return (MirrorMethod<T, C>) super.doAnnotations(annotations);
     }
 
@@ -92,6 +106,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     @Override
     public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction) {
         try {
+            buildMethod(); // 最后生成
             C obj = null;
             if (invObj != null) {
                 obj = (C) target.invoke(invObj, parameters);
@@ -110,6 +125,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
         setMirrorEntityAnnotation(invObj, mirrorEntity);
         try {
+            buildMethod(); // 最后生成
             if (invObj == null) {
                 invoke0(this.initObj, mirrorEntity);
             } else {
@@ -123,9 +139,8 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
     }
 
     private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws Exception {
-        Object obj;
-        doParameter(mirrorEntity.onMethodModify());
-        obj = this.target.invoke(invObj, this.parameters);
+        doParameter(mirrorEntity.onMethodModify(this.parameters));
+        Object obj = this.target.invoke(invObj, this.parameters);
         mirrorEntity.onModifyResult(obj);
     }
 }

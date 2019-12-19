@@ -37,11 +37,6 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
         this.initObj = t;
         this.mirror = (mirror == null ? Mirror.just(t) : mirror);
         doParameter(parameters);
-        try {
-            this.target = (Constructor<T>) initObj.getClass().getConstructor(parameterTypes);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
         accessible0();
     }
 
@@ -52,7 +47,20 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
      */
     @Override
     public MirrorConstructor<T> off() {
-        return (MirrorConstructor<T>)super.off();
+        return (MirrorConstructor<T>) super.off();
+    }
+
+    /**
+     * 生成要操作的对象
+     *
+     * @throws NoSuchMethodException
+     */
+    private void buildConstructor() throws NoSuchMethodException {
+        if (this.target == null) {
+            this.target = (Constructor<T>) this.initObj
+                    .getClass()
+                    .getDeclaredConstructor(this.parameterTypes);
+        }
     }
 
     public MirrorConstructor<T> doParameter(Object... parameters) {
@@ -68,6 +76,7 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
     public Mirror<T> newInstance(ThrowableFunction throwableFunction) {
         T t = null;
         try {
+            buildConstructor();
             t = target.newInstance(parameters);
         } catch (Exception e) {
             ThrowableFunction.isNull(e, throwableFunction);

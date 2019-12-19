@@ -3,6 +3,7 @@ package com.brageast.mirror.interfaces;
 import com.brageast.mirror.Mirror;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
+import com.brageast.mirror.function.TobuildFunction;
 import com.brageast.mirror.reflect.MirrorField;
 import com.brageast.mirror.util.ClassUtil;
 
@@ -22,6 +23,11 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
      * 传进的Mirror
      */
     protected Mirror<T> mirror;
+
+    /**
+     * 操作反射对象的名字
+     */
+    protected String name;
 
     /**
      * 反射所操作的对象, 如构造器, 属性, 方法
@@ -63,6 +69,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
             Class<T> declaringClass = (Class<T>) member.getDeclaringClass();
             this.mirror = Mirror.just(declaringClass);
             this.initObj = ClassUtil.newInstance(declaringClass);
+            this.name = member.getName();
             this.target = target;
         }
     }
@@ -76,7 +83,6 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         return this.mirror;
     }
 
-
     /**
      * 判断是否有没有注解
      * 有返会true,没用返回false
@@ -87,7 +93,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
      */
     public <E extends Annotation> boolean hasAnntation(Class<E> annotation) {
         E declaredAnnotation = target.getDeclaredAnnotation(annotation);
-        if (declaredAnnotation != null) {
+        if (target.getDeclaredAnnotation(annotation) != null) {
             this.annotationHashMap.put(annotation, declaredAnnotation);
             return true;
         }
