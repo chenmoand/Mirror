@@ -6,7 +6,7 @@
 
     <groupId>com.brageast</groupId>
     <artifactId>mirror</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
 
     <distributionManagement>
         <repository>

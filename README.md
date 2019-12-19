@@ -17,8 +17,10 @@
     <version>1.0</version>
   </dependency>
   ```
-  
-  
+
+* 方法三
+
+  [Releases](https://github.com/chenmoand/Mirror/releases) 下载
 
 ### 使用方法
 
@@ -104,19 +106,18 @@ Mirror.just(user)
 
 ```java
 Mirror.just(user)
-    .doOneMethod("setName") // 获得setName这个操作
-    .doAnnotations(Boom.class) // 因为这个是对一个方法的操作 可自行传入多个注解类
-    .invoke(new MirrorEntity() {
-        private Boom boom; //获得刚才判断的注解实例, 如果没用则为null
-
+    .doOneMethod("setName") // 预处理 setName
+    .doParameter("hhaha") // 处理参数
+    .doAnnotations(Boom.class) // 找到Boom注解
+    .invoke(new MirrorEntity() { 
+        private Boom boom; // 自动注入
         @Override
-        public Object[] onMethodModify() {
-            return new Object[]{Convert.conver(boom.num())}; //设置方法参数
+        public Object[] onMethodModify(Object[] parameters) { // parameters是上面的参数
+            return new Object[]{parameters[0] + boom.value()}; // 返回新的参数
         }
-
         @Override
         public void onModifyResult(Object entity) {
-            System.out.println(entity); //得到返回
+            System.out.println(entity); //得到返回 
         }
     });
 ```
