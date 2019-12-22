@@ -50,6 +50,11 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         }
     }
 
+    @Override
+    public <H extends Annotation> MirrorField<T, C> getAannotation(Class<H> cls, ToValueFunction<H> toValueFunction) {
+        return (MirrorField<T, C>)super.getAannotation(cls, toValueFunction);
+    }
+
     /**
      * @param initObj 实例
      * @param mirror  Mirror操作类

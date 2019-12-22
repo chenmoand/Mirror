@@ -3,7 +3,6 @@ package com.brageast.mirror.interfaces;
 import com.brageast.mirror.Mirror;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
-import com.brageast.mirror.function.TobuildFunction;
 import com.brageast.mirror.reflect.MirrorField;
 import com.brageast.mirror.util.ClassUtil;
 
@@ -105,6 +104,24 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
             hasAnntation(annotation);
         }
         return this;
+    }
+
+    /**
+     * 获得注解实例
+     *
+     * @param cls             注解类
+     * @param toValueFunction 获得注解回调方法
+     * @param <H>
+     * @return
+     */
+    public <H extends Annotation> AbstractMirrorType<T, M, C> getAannotation(Class<H> cls, ToValueFunction<H> toValueFunction) {
+        H annotation = (H) annotationHashMap.get(cls);
+        toValueFunction.toValue(annotation);
+        return this;
+    }
+
+    public HashMap<Class<? extends Annotation>, Annotation> getAnnotationHashMap() {
+        return this.annotationHashMap;
     }
 
     @Override

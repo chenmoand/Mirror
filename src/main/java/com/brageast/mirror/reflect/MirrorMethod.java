@@ -65,6 +65,11 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
         return this.target.getReturnType() == returnType;
     }
 
+    @Override
+    public <H extends Annotation> MirrorMethod<T, C> getAannotation(Class<H> cls, ToValueFunction<H> toValueFunction) {
+        return (MirrorMethod<T, C>)super.getAannotation(cls, toValueFunction);
+    }
+
     public MirrorMethod<T, C> doParameter(Object... parameters) {
 
         this.parameterTypes = ClassUtil.getClassTypes(parameters);

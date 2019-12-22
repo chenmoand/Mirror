@@ -8,6 +8,7 @@ import com.brageast.mirror.interfaces.AbstractMirrorType;
 import com.brageast.mirror.interfaces.MirrorEntity;
 import com.brageast.mirror.util.ClassUtil;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 
 public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, T> {
@@ -86,6 +87,16 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
 
     public static <E> MirrorConstructor<E> of(E e, Object... parameters) {
         return new MirrorConstructor<>(e, null, parameters);
+    }
+
+    @Override
+    public MirrorConstructor<T> doAnnotations(Class<? extends Annotation>... annotations) {
+        return (MirrorConstructor<T>) super.doAnnotations(annotations);
+    }
+
+    @Override
+    public <H extends Annotation> MirrorConstructor<T> getAannotation(Class<H> cls, ToValueFunction<H> toValueFunction) {
+        return (MirrorConstructor<T>) super.getAannotation(cls, toValueFunction);
     }
 
     /**
