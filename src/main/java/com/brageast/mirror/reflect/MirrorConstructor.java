@@ -23,6 +23,11 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
      */
     private Object[] parameters;
 
+    /**
+     * 操作的class
+     */
+    private Class<T> tClass;
+
 
     /**
      * 通过Constructor实例化
@@ -34,9 +39,9 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
         accessible0();
     }
 
-    public MirrorConstructor(T t, Mirror mirror, Object[] parameters) {
-        this.initObj = t;
-        this.mirror = (mirror == null ? Mirror.just(t) : mirror);
+    public MirrorConstructor(Class<T> tClass, Mirror mirror, Object[] parameters) {
+        this.tClass = tClass;
+        this.mirror = (mirror == null ? Mirror.just(tClass) : mirror);
         doParameter(parameters);
         accessible0();
     }
@@ -58,9 +63,9 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
      */
     private void buildConstructor() throws NoSuchMethodException {
         if (this.target == null) {
-            this.target = (Constructor<T>) this.initObj
-                    .getClass()
+            this.target = this.tClass
                     .getDeclaredConstructor(this.parameterTypes);
+            if(!this.accessible) target.setAccessible(true);
         }
     }
 
@@ -85,8 +90,8 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
         return Mirror.just(t);
     }
 
-    public static <E> MirrorConstructor<E> of(E e, Object... parameters) {
-        return new MirrorConstructor<>(e, null, parameters);
+    public static <E> MirrorConstructor<E> of(Class<E> tClass, Object... parameters) {
+        return new MirrorConstructor<>(tClass, null, parameters);
     }
 
     @Override

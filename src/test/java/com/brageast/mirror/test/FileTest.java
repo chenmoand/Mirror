@@ -1,6 +1,7 @@
 package com.brageast.mirror.test;
 
 import com.brageast.mirror.Mirror;
+import com.brageast.mirror.MirrorFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,12 @@ public class FileTest {
         Class<?> aClass = Class.forName("org.dom4j.bean.BeanAttribute", false, jarClassLoader);
 
         System.out.println(aClass);*/
-
+        MirrorFile scan = MirrorFile.scan("D:\\Downloads\\dom4j-2.1.1.jar");
+        System.out.println(scan.loadClassWhithMirror("org.dom4j.util.NonLazyElement")
+                .doConstructor("哈哈")
+                .off()
+                .newInstance()
+                .getInstance());
     }
 
     public static void doJarEntry(JarEntry jarEntry) {

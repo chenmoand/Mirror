@@ -89,6 +89,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
             this.target = this.initObj
                     .getClass()
                     .getDeclaredMethod(this.name, this.parameterTypes);
+            if(!this.accessible) target.setAccessible(true);
         }
     }
 

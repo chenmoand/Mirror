@@ -62,7 +62,7 @@ public final class Mirror<T> {
      * @return
      */
     public MirrorConstructor<T> doConstructor(Object... parameters) {
-        return new MirrorConstructor<>(this.type, this, parameters);
+        return new MirrorConstructor<>(this.typeClass, this, parameters);
     }
 
     private Mirror() {
@@ -92,7 +92,7 @@ public final class Mirror<T> {
         Mirror<E> mirror = null;
         try {
             mirror = new Mirror<>(
-                    eClass, eClass.getConstructor().newInstance()
+                    eClass, null
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,7 +121,7 @@ public final class Mirror<T> {
         Mirror<?> mirror = null;
         try {
             Class<?> aClass = Class.forName(url);
-            mirror = new Mirror(aClass, aClass.getConstructor().newInstance());
+            mirror = new Mirror(aClass, null);
         } catch (Exception e) {
             ThrowableFunction.isNull(e, throwableFunction);
         }

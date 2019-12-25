@@ -120,6 +120,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction) {
         try {
             C obj = null;
+            if(!this.accessible) target.setAccessible(true);
             if (invObj != null) {
                 target.set(invObj, parameter);
                 obj = (C) target.get(invObj);
@@ -147,6 +148,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
         setMirrorEntityAnnotation(invObj, mirrorEntity);
         try {
+            if(!this.accessible) target.setAccessible(true);
             if (invObj == null) {
                 invoke0(this.initObj, mirrorEntity);
             } else {

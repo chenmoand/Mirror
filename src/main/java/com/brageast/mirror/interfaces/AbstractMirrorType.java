@@ -48,13 +48,18 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         }
     }
 
+
+    protected boolean accessible = false;
+
+
     /**
      * 无视权限
      *
      * @return
      */
     public AbstractMirrorType<T, M, C> off() {
-        target.setAccessible(true);
+//        target.setAccessible(true);
+        accessible = true;
         return this;
     }
 
