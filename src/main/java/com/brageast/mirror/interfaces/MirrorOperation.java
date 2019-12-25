@@ -4,7 +4,7 @@ import com.brageast.mirror.Mirror;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
 
-public interface MirrorType<T, C> {
+public interface MirrorOperation<T, C> {
     Mirror<T> invoke();
 
     Mirror<T> invoke(Object invObj, ToValueFunction<C> toValueFunction);
@@ -16,4 +16,6 @@ public interface MirrorType<T, C> {
     Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity);
 
     Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction);
+
+    C getValue();
 }

@@ -11,7 +11,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.util.HashMap;
 
-public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> implements MirrorType<T, C> {
+public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> implements MirrorOperation<T, C> {
 
     /**
      * 实例对象的类
@@ -176,4 +176,6 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
     public M getTarget() {
         return target;
     }
+
+
 }

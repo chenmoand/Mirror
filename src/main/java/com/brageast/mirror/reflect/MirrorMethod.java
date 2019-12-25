@@ -7,6 +7,7 @@ import com.brageast.mirror.interfaces.AbstractMirrorType;
 import com.brageast.mirror.interfaces.MirrorEntity;
 import com.brageast.mirror.util.ClassUtil;
 
+import java.awt.print.PrinterAbortException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -141,6 +142,17 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
         }
 
         return this.mirror;
+    }
+
+    @Override
+    @Deprecated
+    public C getValue() {
+        try {
+            throw new PrinterAbortException("请使用invoke方法获取value");
+        } catch (PrinterAbortException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws Exception {

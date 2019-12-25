@@ -136,4 +136,14 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
         }
         return null;
     }
+
+    /**
+     * 直接获取实例
+     *
+     * @return
+     */
+    @Override
+    public T getValue() {
+        return newInstance().getInstance();
+    }
 }

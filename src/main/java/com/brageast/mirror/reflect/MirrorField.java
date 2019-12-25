@@ -160,6 +160,16 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         return this.mirror;
     }
 
+    @Override
+    public C getValue() {
+        try {
+            return (C)target.get(initObj);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws IllegalAccessException {
         Object obj, value;
         obj = this.target.get(invObj);

@@ -5,6 +5,7 @@ import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.reflect.MirrorConstructor;
 import com.brageast.mirror.reflect.MirrorField;
 import com.brageast.mirror.reflect.MirrorMethod;
+import com.brageast.mirror.reflect.MirrorType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -38,7 +39,7 @@ public final class Mirror<T> {
     /**
      * 获得默认权限
      *
-     * @return
+     * @return 默认权限
      */
     public boolean defaultAccessible() {
         return accessible;
@@ -194,6 +195,10 @@ public final class Mirror<T> {
         return mirrorMethods;
     }
 
+    public MirrorType<T> doType() {
+        return new MirrorType<>(this, this.typeClass);
+    }
+
     /**
      * 对一个类的方法进行操作
      *
@@ -244,7 +249,7 @@ public final class Mirror<T> {
      * @param throwableFunction 异常处理
      * @param parameter         参数
      * @param <C>               属性类型
-     * @return
+     * @return 本身
      */
     public <C> MirrorField<T, C> doOneField(String name, ThrowableFunction throwableFunction, C parameter) {
         Objects.requireNonNull(name, "方法名称不能为空");
@@ -299,7 +304,7 @@ public final class Mirror<T> {
     /**
      * 得到操作的实例
      *
-     * @return
+     * @return 实例
      */
     public T getInstance() {
         return type;
