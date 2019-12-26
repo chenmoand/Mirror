@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
- *
  * @param <T> 记录传入类得类型
  */
 public final class Mirror<T> {
@@ -100,6 +98,18 @@ public final class Mirror<T> {
         return mirror;
     }
 
+    protected boolean isUseDeclared = true;
+
+    /**
+     * 不使用Declared 方式获取属性 或者方法
+     *
+     * @return
+     */
+    protected Mirror<T> notUseDeclared() {
+        isUseDeclared = false;
+        return this;
+    }
+
     /**
      * 实例化一个Mirror反射类
      *
@@ -157,7 +167,7 @@ public final class Mirror<T> {
      * @return
      */
     public List<MirrorField<T, Object>> allField(FilterFunction<MirrorField<T, Object>> filter) {
-        final Field[] declaredFields = typeClass.getDeclaredFields();
+        final Field[] declaredFields = isUseDeclared ? typeClass.getDeclaredFields() : typeClass.getFields();
         List<MirrorField<T, Object>> mirrorFields = new ArrayList<>();
         for (Field field : declaredFields) {
             MirrorField<T, Object> mirrorField = new MirrorField<>(type, this, field);
@@ -184,7 +194,7 @@ public final class Mirror<T> {
      * @return
      */
     public List<MirrorMethod<T, Object>> allMethod(FilterFunction<MirrorMethod<T, Object>> filter) {
-        final Method[] declaredMethods = typeClass.getDeclaredMethods();
+        final Method[] declaredMethods = isUseDeclared ? typeClass.getDeclaredMethods() : typeClass.getMethods();
         List<MirrorMethod<T, Object>> mirrorMethods = new ArrayList<>();
         for (Method method : declaredMethods) {
             MirrorMethod<T, Object> mirrorMethod = new MirrorMethod<>(type, this, method);
@@ -261,7 +271,6 @@ public final class Mirror<T> {
         }
         return mirrorField;
     }
-
 
     /**
      * 找到所有对于一个返回类的集合

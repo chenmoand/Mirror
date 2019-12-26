@@ -28,6 +28,10 @@ public class MirrorFile {
         this.file = file;
         if (file.isDirectory()) {
             FileUtil.doFilesURL(file)
+                    .stream()
+                    .filter(url -> url.getPath().endsWith("jar") ||
+                            url.getPath().endsWith(".class")
+                    )
                     .forEach(mirrorClassLoader::addURL);
         } else {
             URL url = FileUtil.fileToURL(file);
@@ -38,6 +42,7 @@ public class MirrorFile {
     public Class<?> loadClass(String str) {
         return loadClass(str, null);
     }
+
     public Class<?> loadClass(String str, ThrowableFunction throwableFunction) {
         Class<?> cls = null;
         try {
@@ -51,6 +56,7 @@ public class MirrorFile {
     public Mirror<?> loadClassWhithMirror(String str) {
         return Mirror.just(loadClass(str));
     }
+
     public Mirror<?> loadClassWhithMirror(String str, ThrowableFunction throwableFunction) {
         return Mirror.just(loadClass(str, throwableFunction));
     }

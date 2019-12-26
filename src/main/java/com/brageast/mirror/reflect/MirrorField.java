@@ -43,6 +43,7 @@ public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> impl
     public MirrorField(T initObj, Mirror<T> mirror, String name, C parameter) {
         this.initObj = initObj;
         this.mirror = mirror;
+        this.name = name;
         doParameter(parameter);
     }
 
