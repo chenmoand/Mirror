@@ -13,8 +13,6 @@ import java.util.Objects;
  *
  */
 public class MirrorFile {
-
-
     private static final MirrorClassLoader mirrorClassLoader = new MirrorClassLoader();
 
     /**

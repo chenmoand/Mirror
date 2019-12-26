@@ -71,7 +71,9 @@ public abstract class AbstractMirrorOperation<T, M extends AccessibleObject, C> 
             Member member = (Member) target;
             Class<T> declaringClass = (Class<T>) member.getDeclaringClass();
             this.mirror = Mirror.just(declaringClass);
-            this.initObj = ClassUtil.newInstance(declaringClass);
+            // 防止出现找不到构造器异常, 不对其进行实例化
+            // 请使用invoke(xxx)的时候传入一个实例化对象
+            // this.initObj = ClassUtil.newInstance(declaringClass);
             this.name = member.getName();
             this.target = target;
         }
@@ -134,6 +136,18 @@ public abstract class AbstractMirrorOperation<T, M extends AccessibleObject, C> 
                 .defaultOffAll() // 关闭所有权限检查
                 .allField()
                 .forEach(mirrorField -> this.onMirrorFieldAnnotation(invObj, mirrorField));
+    }
+
+    protected boolean isUseDeclared = true;
+
+    /**
+     * 不使用Declared 方式获取属性 或者方法
+     *
+     * @return
+     */
+    protected AbstractMirrorOperation<T, M, C> notUseDeclared() {
+        isUseDeclared = false;
+        return this;
     }
 
     protected <M, H> void onMirrorFieldAnnotation(Object invObj, MirrorField<M, H> mirrorField) {

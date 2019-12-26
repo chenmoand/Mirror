@@ -32,12 +32,14 @@ public class FileTest {
 
         System.out.println(aClass);*/
         MirrorFile scan = MirrorFile.scan("D:\\Downloads\\dom4j-2.1.1.jar");
-        System.out.println(scan.loadClassWhithMirror("org.dom4j.util.NonLazyElement")
-                .doConstructor("哈哈")
-                .off()
+        scan.loadClassWhithMirror("org.dom4j.util.NonLazyElement")
+                .doConstructor("哈哈").off()
                 .newInstance()
-                .getInstance());
+                .doOneMethod("toString")
+                .notUseDeclared()
+                .invoke(System.out::print);
     }
+
 
     public static void doJarEntry(JarEntry jarEntry) {
         try (

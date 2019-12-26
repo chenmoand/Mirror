@@ -1,6 +1,7 @@
 package com.brageast.mirror.reflect;
 
 import com.brageast.mirror.Mirror;
+import com.brageast.mirror.MirrorFile;
 import com.brageast.mirror.entity.Value;
 import com.brageast.mirror.function.InvokeFunction;
 import com.brageast.mirror.function.ThrowableFunction;
@@ -30,7 +31,6 @@ public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> impl
 
     public MirrorField(Field target) {
         super(target);
-        accessible0();
     }
 
     /**
@@ -38,22 +38,38 @@ public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> impl
      * @param mirror            Mirror实例化对象
      * @param name              属性名称
      * @param parameter         参数
-     * @param throwableFunction 异常回调
+     *
      */
-    public MirrorField(T initObj, Mirror<T> mirror, String name, C parameter, ThrowableFunction throwableFunction) {
+    public MirrorField(T initObj, Mirror<T> mirror, String name, C parameter) {
         this.initObj = initObj;
         this.mirror = mirror;
         doParameter(parameter);
+    }
+
+
+    private void buildField(ThrowableFunction throwableFunction) {
         try {
-            this.target = initObj.getClass().getDeclaredField(name);
+            Class<?> cls = initObj.getClass();
+            if(target == null) {
+                this.target = isUseDeclared ?
+                        cls.getDeclaredField(name) :
+                        cls.getField(name);
+            }
             accessible0();
+            if(this.accessible) target.setAccessible(true);
         } catch (NoSuchFieldException e) {
             ThrowableFunction.isNull(e, throwableFunction);
         }
     }
 
     @Override
+    public MirrorField<T, C> notUseDeclared() {
+        return (MirrorField<T, C>)super.notUseDeclared();
+    }
+
+    @Override
     public <H extends Annotation> MirrorField<T, C> getAannotation(Class<H> cls, ToValueFunction<H> toValueFunction) {
+        buildField(null);
         return (MirrorField<T, C>)super.getAannotation(cls, toValueFunction);
     }
 
@@ -66,7 +82,6 @@ public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> impl
         this.initObj = initObj;
         this.mirror = mirror;
         this.target = field;
-        accessible0();
     }
 
     /**
@@ -82,6 +97,12 @@ public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> impl
         return this;
     }
 
+    @Override
+    public <E extends Annotation> boolean hasAnntation(Class<E> annotation) {
+        buildField(null);
+        return super.hasAnntation(annotation);
+    }
+
     /**
      * 只要有这里面其中一个注解就会加入到annotationHashMap里面
      *
@@ -93,7 +114,7 @@ public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> impl
     }
 
     public static <E, H> MirrorField<E, H> of(E initObj, Mirror<E> mirror, String name, H objValue) {
-        return new MirrorField<>(initObj, mirror, name, objValue, null);
+        return new MirrorField<>(initObj, mirror, name, objValue);
     }
 
     public static <E> MirrorField<E, Object> of(E initObj, Mirror<E> mirror, Field field) {
@@ -121,9 +142,9 @@ public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> impl
      */
     @Override
     public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction) {
+        buildField(throwableFunction);
         try {
             C obj = null;
-            if(this.accessible) target.setAccessible(true);
             if (invObj != null) {
                 target.set(invObj, parameter);
                 obj = (C) target.get(invObj);
@@ -149,6 +170,7 @@ public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> impl
      */
     @Override
     public Mirror<T> invoke(Object invObj, InvokeFunction invokeFunction, ThrowableFunction throwableFunction) {
+        buildField(throwableFunction);
         setMirrorEntityAnnotation(invObj, invokeFunction);
         try {
             if(this.accessible) target.setAccessible(true);

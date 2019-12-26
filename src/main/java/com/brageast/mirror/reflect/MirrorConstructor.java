@@ -34,14 +34,13 @@ public class MirrorConstructor<T> extends AbstractMirrorOperation<T, Constructor
      */
     public MirrorConstructor(Constructor<T> target) {
         super(target);
-        accessible0();
+
     }
 
     public MirrorConstructor(Class<T> tClass, Mirror mirror, Object[] parameters) {
         this.tClass = tClass;
         this.mirror = (mirror == null ? Mirror.just(tClass) : mirror);
         doParameter(parameters);
-        accessible0();
     }
 
     /**
@@ -54,6 +53,12 @@ public class MirrorConstructor<T> extends AbstractMirrorOperation<T, Constructor
         return (MirrorConstructor<T>) super.off();
     }
 
+
+    @Override
+    public MirrorConstructor<T> notUseDeclared() {
+        return (MirrorConstructor<T>)super.notUseDeclared();
+    }
+
     /**
      * 生成要操作的对象
      *
@@ -61,10 +66,12 @@ public class MirrorConstructor<T> extends AbstractMirrorOperation<T, Constructor
      */
     private void buildConstructor() throws NoSuchMethodException {
         if (this.target == null) {
-            this.target = this.tClass
-                    .getDeclaredConstructor(this.parameterTypes);
-            if(!this.accessible) target.setAccessible(true);
+            this.target = isUseDeclared ?
+                    this.tClass.getDeclaredConstructor(this.parameterTypes) :
+                    this.tClass.getConstructor(this.parameterTypes);
         }
+        accessible0();
+        if(!this.accessible) target.setAccessible(true);
     }
 
     public MirrorConstructor<T> doParameter(Object... parameters) {
@@ -90,6 +97,16 @@ public class MirrorConstructor<T> extends AbstractMirrorOperation<T, Constructor
 
     public static <E> MirrorConstructor<E> of(Class<E> tClass, Object... parameters) {
         return new MirrorConstructor<>(tClass, null, parameters);
+    }
+
+    @Override
+    public <E extends Annotation> boolean hasAnntation(Class<E> annotation) {
+        try {
+            buildConstructor();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return super.hasAnntation(annotation);
     }
 
     @Override

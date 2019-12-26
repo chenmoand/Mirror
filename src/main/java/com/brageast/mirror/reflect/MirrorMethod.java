@@ -1,10 +1,10 @@
 package com.brageast.mirror.reflect;
 
 import com.brageast.mirror.Mirror;
-import com.brageast.mirror.function.ThrowableFunction;
-import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.abstracts.AbstractMirrorOperation;
 import com.brageast.mirror.function.InvokeFunction;
+import com.brageast.mirror.function.ThrowableFunction;
+import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.interfaces.MirrorOperation;
 import com.brageast.mirror.util.ClassUtil;
 
@@ -25,7 +25,6 @@ public class MirrorMethod<T, C> extends AbstractMirrorOperation<T, Method, C> im
 
     public MirrorMethod(Method method) {
         super(method);
-        accessible0();
     }
 
     @Override
@@ -46,7 +45,6 @@ public class MirrorMethod<T, C> extends AbstractMirrorOperation<T, Method, C> im
         this.mirror = mirror;
         this.name = method.getName();
         this.target = method;
-        accessible0();
     }
 
     public static <E, W> MirrorMethod<E, W> of(E initType, Mirror<E> mirror, String name, Object[] objects) {
@@ -69,7 +67,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorOperation<T, Method, C> im
 
     @Override
     public <H extends Annotation> MirrorMethod<T, C> getAannotation(Class<H> cls, ToValueFunction<H> toValueFunction) {
-        return (MirrorMethod<T, C>)super.getAannotation(cls, toValueFunction);
+        return (MirrorMethod<T, C>) super.getAannotation(cls, toValueFunction);
     }
 
     public MirrorMethod<T, C> doParameter(Object... parameters) {
@@ -80,6 +78,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorOperation<T, Method, C> im
         return this;
     }
 
+
     /**
      * 生成要操作的对象
      *
@@ -87,11 +86,28 @@ public class MirrorMethod<T, C> extends AbstractMirrorOperation<T, Method, C> im
      */
     private void buildMethod() throws NoSuchMethodException {
         if (this.target == null) {
-            this.target = this.initObj
-                    .getClass()
-                    .getDeclaredMethod(this.name, this.parameterTypes);
-            if(this.accessible) target.setAccessible(true);
+            Class<?> cls = this.initObj.getClass();
+            this.target = isUseDeclared ?
+                    cls.getDeclaredMethod(this.name, this.parameterTypes) :
+                    cls.getMethod(this.name, this.parameterTypes);
         }
+        accessible0();
+        if (this.accessible) target.setAccessible(true);
+    }
+
+    @Override
+    public MirrorMethod<T, C> notUseDeclared() {
+        return (MirrorMethod<T, C>) super.notUseDeclared();
+    }
+
+    @Override
+    public <E extends Annotation> boolean hasAnntation(Class<E> annotation) {
+        try {
+            buildMethod();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return super.hasAnntation(annotation);
     }
 
     /**
@@ -102,11 +118,6 @@ public class MirrorMethod<T, C> extends AbstractMirrorOperation<T, Method, C> im
      */
     @Override
     public MirrorMethod<T, C> doAnnotations(Class<? extends Annotation>... annotations) {
-        try {
-            buildMethod();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
         return (MirrorMethod<T, C>) super.doAnnotations(annotations);
     }
 
