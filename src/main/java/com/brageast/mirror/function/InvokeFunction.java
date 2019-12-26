@@ -1,10 +1,10 @@
-package com.brageast.mirror.interfaces;
+package com.brageast.mirror.function;
 
 /**
  * 用于处理注解的类
  *
  */
-public abstract class MirrorEntity {
+public abstract class InvokeFunction {
     /**
      * 对于属性的修改请重写这个
      *

@@ -1,8 +1,8 @@
-package com.brageast.mirror.interfaces;
+package com.brageast.mirror.abstracts;
 
 import com.brageast.mirror.Mirror;
-import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
+import com.brageast.mirror.function.InvokeFunction;
 import com.brageast.mirror.reflect.MirrorField;
 import com.brageast.mirror.util.ClassUtil;
 
@@ -11,7 +11,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.util.HashMap;
 
-public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> implements MirrorOperation<T, C> {
+public abstract class AbstractMirrorOperation<T, M extends AccessibleObject, C> {
 
     /**
      * 实例对象的类
@@ -44,7 +44,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
      */
     protected void accessible0() {
         if (mirror.defaultAccessible()) {
-            target.setAccessible(true);
+            accessible = true;
         }
     }
 
@@ -57,17 +57,16 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
      *
      * @return
      */
-    public AbstractMirrorType<T, M, C> off() {
-//        target.setAccessible(true);
+    public AbstractMirrorOperation<T, M, C> off() {
         accessible = true;
         return this;
     }
 
-    public AbstractMirrorType() {
+    public AbstractMirrorOperation() {
 
     }
 
-    protected AbstractMirrorType(M target) {
+    protected AbstractMirrorOperation(M target) {
         if (target instanceof Member) {
             Member member = (Member) target;
             Class<T> declaringClass = (Class<T>) member.getDeclaringClass();
@@ -104,7 +103,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         return false;
     }
 
-    protected AbstractMirrorType<T, M, C> doAnnotations(Class<? extends Annotation>... annotations) {
+    protected AbstractMirrorOperation<T, M, C> doAnnotations(Class<? extends Annotation>... annotations) {
         for (Class<? extends Annotation> annotation : annotations) {
             hasAnntation(annotation);
         }
@@ -119,7 +118,7 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
      * @param <H>
      * @return
      */
-    public <H extends Annotation> AbstractMirrorType<T, M, C> getAannotation(Class<H> cls, ToValueFunction<H> toValueFunction) {
+    public <H extends Annotation> AbstractMirrorOperation<T, M, C> getAannotation(Class<H> cls, ToValueFunction<H> toValueFunction) {
         H annotation = (H) annotationHashMap.get(cls);
         toValueFunction.toValue(annotation);
         return this;
@@ -129,36 +128,9 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         return this.annotationHashMap;
     }
 
-    @Override
-    public Mirror<T> invoke() {
-        return this.invoke(null, (ThrowableFunction) null, null);
-    }
-
-    @Override
-    public Mirror<T> invoke(Object invObj, ToValueFunction<C> toValueFunction) {
-        return this.invoke(invObj, null, toValueFunction);
-    }
-
-    @Override
-    public Mirror<T> invoke(ToValueFunction<C> toValueFunction) {
-        return this.invoke(null, null, toValueFunction);
-    }
-
-    public abstract Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction);
-
-    @Override
-    public Mirror<T> invoke(MirrorEntity mirrorEntity) {
-        return this.invoke(null, mirrorEntity);
-    }
-
-    @Override
-    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity) {
-        return this.invoke(invObj, mirrorEntity, null);
-    }
-
-    protected void setMirrorEntityAnnotation(Object invObj, MirrorEntity mirrorEntity) {
+    protected void setMirrorEntityAnnotation(Object invObj, InvokeFunction invokeFunction) {
         // 先将Annotation 值注入进去
-        Mirror.just(mirrorEntity)
+        Mirror.just(invokeFunction)
                 .defaultOffAll() // 关闭所有权限检查
                 .allField()
                 .forEach(mirrorField -> this.onMirrorFieldAnnotation(invObj, mirrorField));
@@ -182,5 +154,6 @@ public abstract class AbstractMirrorType<T, M extends AccessibleObject, C> imple
         return target;
     }
 
+    protected abstract C getValue();
 
 }

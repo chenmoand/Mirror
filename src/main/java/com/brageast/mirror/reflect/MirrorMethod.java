@@ -3,15 +3,16 @@ package com.brageast.mirror.reflect;
 import com.brageast.mirror.Mirror;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
-import com.brageast.mirror.interfaces.AbstractMirrorType;
-import com.brageast.mirror.interfaces.MirrorEntity;
+import com.brageast.mirror.abstracts.AbstractMirrorOperation;
+import com.brageast.mirror.function.InvokeFunction;
+import com.brageast.mirror.interfaces.MirrorOperation;
 import com.brageast.mirror.util.ClassUtil;
 
 import java.awt.print.PrinterAbortException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
+public class MirrorMethod<T, C> extends AbstractMirrorOperation<T, Method, C> implements MirrorOperation<T, C> {
 
     /**
      * 参数类型
@@ -89,7 +90,7 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
             this.target = this.initObj
                     .getClass()
                     .getDeclaredMethod(this.name, this.parameterTypes);
-            if(!this.accessible) target.setAccessible(true);
+            if(this.accessible) target.setAccessible(true);
         }
     }
 
@@ -129,14 +130,14 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
 
 
     @Override
-    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
-        setMirrorEntityAnnotation(invObj, mirrorEntity);
+    public Mirror<T> invoke(Object invObj, InvokeFunction invokeFunction, ThrowableFunction throwableFunction) {
+        setMirrorEntityAnnotation(invObj, invokeFunction);
         try {
             buildMethod(); // 最后生成
             if (invObj == null) {
-                invoke0(this.initObj, mirrorEntity);
+                invoke0(this.initObj, invokeFunction);
             } else {
-                invoke0(invObj, mirrorEntity);
+                invoke0(invObj, invokeFunction);
             }
         } catch (Exception e) {
             ThrowableFunction.isNull(e, throwableFunction);
@@ -156,9 +157,9 @@ public class MirrorMethod<T, C> extends AbstractMirrorType<T, Method, C> {
         return null;
     }
 
-    private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws Exception {
-        doParameter(mirrorEntity.onMethodModify(this.parameters));
+    private void invoke0(Object invObj, InvokeFunction invokeFunction) throws Exception {
+        doParameter(invokeFunction.onMethodModify(this.parameters));
         Object obj = this.target.invoke(invObj, this.parameters);
-        mirrorEntity.onModifyResult(obj);
+        invokeFunction.onModifyResult(obj);
     }
 }

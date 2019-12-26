@@ -16,6 +16,10 @@ public class MirrorFile {
 
 
     private static final MirrorClassLoader mirrorClassLoader = new MirrorClassLoader();
+
+    /**
+     * 一个文件或者目录
+     */
     private File file;
 
     public static MirrorClassLoader getClassLoader() {

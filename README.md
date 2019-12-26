@@ -86,7 +86,7 @@ Mirror.just(user)
     .defaultOffAll() // 关闭所有权限验证
     .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
     .forEach(mirrorField ->
-             mirrorField.invoke(new MirrorEntity() {
+             mirrorField.invoke(new InvokeFunction() {
                  private Boom boom; // 自动将上面筛选的注解实例注入
 
                  @Override
@@ -109,7 +109,7 @@ Mirror.just(user)
     .doOneMethod("setName") // 预处理 setName
     .doParameter("hhaha") // 处理参数
     .doAnnotations(Boom.class) // 找到Boom注解
-    .invoke(new MirrorEntity() { 
+    .invoke(new InvokeFunction() { 
         private Boom boom; // 自动注入
         @Override
         public Object[] onMethodModify(Object[] parameters) { // parameters是上面的参数
@@ -128,8 +128,8 @@ Mirror.just(user)
 
 1. 假设我想传入一个方法```null```值怎吗办?
 
-   请使用```com.brageast.mirror.util.Null```中的```isNull()```方法
+   请使用```com.brageast.mirror.entity.Null```中的```isNull()```方法
 
 2. 如果我想传入的是基本数据类型怎吗办?
 
-   请使用```com.brageast.mirror.util.Convert```中的```cover()```方法,因为在默认解析的时候```int```类型会自动解析成```Integer```类型,使用这个方法可以保留原先属性;
+   请使用```com.brageast.mirror.entity.Convert```中的```cover()```方法,因为在默认解析的时候```int```类型会自动解析成```Integer```类型,使用这个方法可以保留原先属性;

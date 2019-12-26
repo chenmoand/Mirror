@@ -1,4 +1,4 @@
-package com.brageast.mirror.util;
+package com.brageast.mirror.entity;
 
 /**
  * 用于转换一个基本类型

@@ -1,17 +1,15 @@
 package com.brageast.mirror.reflect;
 
 import com.brageast.mirror.Mirror;
-import com.brageast.mirror.exception.ProhibitedUseException;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
-import com.brageast.mirror.interfaces.AbstractMirrorType;
-import com.brageast.mirror.interfaces.MirrorEntity;
+import com.brageast.mirror.abstracts.AbstractMirrorOperation;
 import com.brageast.mirror.util.ClassUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 
-public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, T> {
+public class MirrorConstructor<T> extends AbstractMirrorOperation<T, Constructor<T>, T> {
 
     /**
      * 传入的类型的类
@@ -104,43 +102,6 @@ public class MirrorConstructor<T> extends AbstractMirrorType<T, Constructor<T>, 
         return (MirrorConstructor<T>) super.getAannotation(cls, toValueFunction);
     }
 
-    /**
-     * 不要调用这个方法
-     *
-     * @param invObj
-     * @param throwableFunction
-     * @param toValueFunction
-     * @return
-     */
-    @Override
-    @Deprecated
-    public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<T> toValueFunction) {
-        try {
-            throw new ProhibitedUseException("禁止使用此方法");
-        } catch (ProhibitedUseException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 不要用这个方法
-     *
-     * @param invObj
-     * @param mirrorEntity
-     * @param throwableFunction
-     * @return
-     */
-    @Override
-    @Deprecated
-    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
-        try {
-            throw new ProhibitedUseException("禁止使用此方法");
-        } catch (ProhibitedUseException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     /**
      * 直接获取实例

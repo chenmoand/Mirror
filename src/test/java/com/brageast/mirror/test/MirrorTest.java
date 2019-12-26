@@ -2,19 +2,20 @@ package com.brageast.mirror.test;
 
 
 import com.brageast.mirror.Mirror;
-import com.brageast.mirror.interfaces.MirrorEntity;
-import com.brageast.mirror.util.Convert;
+import com.brageast.mirror.entity.Convert;
+import com.brageast.mirror.entity.Null;
+import com.brageast.mirror.function.InvokeFunction;
 
 import java.lang.reflect.Field;
 
 public class MirrorTest {
     public static void main(String[] args) {
         User user = new User();
-        /*Mirror.just(user)
-                .doOneField("name", null)
+        Mirror.just(user)
+                .defaultOffAll()
+                .doOneField("name", Null.isNull(String.class))
                 .invoke();
-*/
-        /*Mirror.just(user)
+        Mirror.just(user)
                 .withReturnTypeMethod(String.class)
                 .forEach(mm -> mm.invoke(System.out::println));
 
@@ -22,7 +23,7 @@ public class MirrorTest {
                 .defaultOffAll()
                 .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
                 .forEach(mirrorField ->
-                        mirrorField.invoke(new MirrorEntity() {
+                        mirrorField.invoke(new InvokeFunction() {
                             private Boom boom; // 自动将上面筛选的注解实例注入
 
                             @Override
@@ -57,13 +58,13 @@ public class MirrorTest {
                 .defaultOffAll();
 
         Mirror.just(user)
-                .withTypeField(String.class);*/
+                .withTypeField(String.class);
 
         Mirror.just(user)
                 .doOneMethod("setName")
                 .doParameter("hhaha")
                 .doAnnotations(Boom.class)
-                .invoke(new MirrorEntity() {
+                .invoke(new InvokeFunction() {
                     private Boom boom;
 
                     @Override

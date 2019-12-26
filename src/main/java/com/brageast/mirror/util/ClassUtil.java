@@ -1,5 +1,8 @@
 package com.brageast.mirror.util;
 
+import com.brageast.mirror.entity.Convert;
+import com.brageast.mirror.entity.Null;
+import com.brageast.mirror.entity.Value;
 import com.brageast.mirror.function.ThrowableFunction;
 
 import java.util.Objects;
@@ -33,6 +36,27 @@ public abstract class ClassUtil {
             }
         }
         return classes;
+    }
+
+    public static <E> Value<E> getClassType(E object) {
+        Value<E> value = new Value<>();
+
+        if(object != null) {
+            if(object instanceof Null) {
+                value.setTypeClass((Class<E>) ((Null) object).getTypeClass());
+                value.setTypeValue(null);
+            } else if (object instanceof Convert) {
+                Convert convert = (Convert) object;
+                value.setTypeClass((Class<E>)convert.getTypeClass());
+                value.setTypeValue((E) convert.getTypeValue());
+            } else {
+                value.setTypeClass((Class<E>) object.getClass());
+                value.setTypeValue(object);
+            }
+        }
+
+
+        return value;
     }
 
     public static <T> T newInstance(Class<T> tClass) {

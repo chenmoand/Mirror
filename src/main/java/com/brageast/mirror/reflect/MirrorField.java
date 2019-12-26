@@ -1,16 +1,18 @@
 package com.brageast.mirror.reflect;
 
 import com.brageast.mirror.Mirror;
+import com.brageast.mirror.entity.Value;
+import com.brageast.mirror.function.InvokeFunction;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
-import com.brageast.mirror.interfaces.AbstractMirrorType;
-import com.brageast.mirror.interfaces.MirrorEntity;
+import com.brageast.mirror.abstracts.AbstractMirrorOperation;
+import com.brageast.mirror.interfaces.MirrorOperation;
 import com.brageast.mirror.util.ClassUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
+public class MirrorField<T, C> extends AbstractMirrorOperation<T, Field, C> implements MirrorOperation<T, C> {
 
     /**
      * 参数类型
@@ -74,8 +76,9 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
      * @return
      */
     public MirrorField<T, C> doParameter(C parameter) {
-        this.parameterType = (Class<C>) ClassUtil.getClassTypes(new Object[]{parameter})[0];
-        this.parameter = parameter;
+        Value<C> classType = ClassUtil.getClassType(parameter);
+        this.parameterType = classType.getTypeClass();
+        this.parameter = classType.getTypeValue();
         return this;
     }
 
@@ -120,7 +123,7 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
     public Mirror<T> invoke(Object invObj, ThrowableFunction throwableFunction, ToValueFunction<C> toValueFunction) {
         try {
             C obj = null;
-            if(!this.accessible) target.setAccessible(true);
+            if(this.accessible) target.setAccessible(true);
             if (invObj != null) {
                 target.set(invObj, parameter);
                 obj = (C) target.get(invObj);
@@ -140,19 +143,19 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
      * 执行这个属性
      *
      * @param invObj            实例化对象
-     * @param mirrorEntity      mirror实体对象
+     * @param invokeFunction      mirror实体对象
      * @param throwableFunction 异常处理
      * @return
      */
     @Override
-    public Mirror<T> invoke(Object invObj, MirrorEntity mirrorEntity, ThrowableFunction throwableFunction) {
-        setMirrorEntityAnnotation(invObj, mirrorEntity);
+    public Mirror<T> invoke(Object invObj, InvokeFunction invokeFunction, ThrowableFunction throwableFunction) {
+        setMirrorEntityAnnotation(invObj, invokeFunction);
         try {
-            if(!this.accessible) target.setAccessible(true);
+            if(this.accessible) target.setAccessible(true);
             if (invObj == null) {
-                invoke0(this.initObj, mirrorEntity);
+                invoke0(this.initObj, invokeFunction);
             } else {
-                invoke0(invObj, mirrorEntity);
+                invoke0(invObj, invokeFunction);
             }
 
         } catch (IllegalAccessException e) {
@@ -172,13 +175,13 @@ public class MirrorField<T, C> extends AbstractMirrorType<T, Field, C> {
         return null;
     }
 
-    private void invoke0(Object invObj, MirrorEntity mirrorEntity) throws IllegalAccessException {
+    private void invoke0(Object invObj, InvokeFunction invokeFunction) throws IllegalAccessException {
         Object obj, value;
         obj = this.target.get(invObj);
-        value = mirrorEntity.onFieldModify(obj);
+        value = invokeFunction.onFieldModify(obj);
         this.target.set(invObj, value);
         obj = this.target.get(invObj);
-        mirrorEntity.onModifyResult(obj);
+        invokeFunction.onModifyResult(obj);
     }
 
 }

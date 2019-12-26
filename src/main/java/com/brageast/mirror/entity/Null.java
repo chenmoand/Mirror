@@ -1,4 +1,4 @@
-package com.brageast.mirror.util;
+package com.brageast.mirror.entity;
 
 /**
  * 用于转换一个Null
@@ -11,7 +11,7 @@ package com.brageast.mirror.util;
  *      Mirror.just(User.Class)
  *          .doOneMethod("setAge", Null.isNull(int.class));
  * 提示:
- *      可以使用import static com.brageast.mirror.util.Null.isNull;
+ *      可以使用import static com.brageast.mirror.entity.Null.isNull;
  *      方式更加方便哦!
  *
  */

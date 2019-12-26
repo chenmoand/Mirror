@@ -1,6 +1,5 @@
 package com.brageast.mirror.test;
 
-import com.brageast.mirror.Mirror;
 import com.brageast.mirror.MirrorFile;
 
 import java.io.File;
