@@ -87,25 +87,17 @@ public final class Mirror<T> {
      * @return
      */
     public static <E> Mirror<E> just(Class<E> eClass) {
-        Mirror<E> mirror = null;
-        try {
-            mirror = new Mirror<>(
-                    eClass, null
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return mirror;
+        return new Mirror<>(eClass, null);
     }
 
-    protected boolean isUseDeclared = true;
+    private boolean isUseDeclared = true;
 
     /**
      * 不使用Declared 方式获取属性 或者方法
      *
      * @return
      */
-    protected Mirror<T> notUseDeclared() {
+    public Mirror<T> notUseDeclared() {
         isUseDeclared = false;
         return this;
     }
@@ -131,7 +123,7 @@ public final class Mirror<T> {
         Mirror<?> mirror = null;
         try {
             Class<?> aClass = Class.forName(url);
-            mirror = new Mirror(aClass, null);
+            mirror = new Mirror<>(aClass, null);
         } catch (Exception e) {
             ThrowableFunction.isNull(e, throwableFunction);
         }
@@ -155,8 +147,8 @@ public final class Mirror<T> {
      *
      * @return
      */
-    public List<MirrorField<T, Object>> allField() {
-        return allField(null);
+    public List<MirrorField<T>> allField() {
+        return allField(Objects::nonNull);
     }
 
 
@@ -166,11 +158,11 @@ public final class Mirror<T> {
      * @param filter 过滤器
      * @return
      */
-    public List<MirrorField<T, Object>> allField(FilterFunction<MirrorField<T, Object>> filter) {
+    public List<MirrorField<T>> allField(FilterFunction<MirrorField<T>> filter) {
         final Field[] declaredFields = isUseDeclared ? typeClass.getDeclaredFields() : typeClass.getFields();
-        List<MirrorField<T, Object>> mirrorFields = new ArrayList<>();
+        List<MirrorField<T>> mirrorFields = new ArrayList<>();
         for (Field field : declaredFields) {
-            MirrorField<T, Object> mirrorField = new MirrorField<>(type, this, field);
+            MirrorField<T> mirrorField = new MirrorField<>(type, this, field);
             if (filter == null || filter.doFilter(mirrorField)) {
                 mirrorFields.add(mirrorField);
             }
@@ -247,8 +239,8 @@ public final class Mirror<T> {
      * @param <C>
      * @return
      */
-    public <C> MirrorField<T, C> doOneField(String name, C parameter) {
-        return this.doOneField(name, null, parameter);
+    public <C> MirrorField<T> doOneField(String name, C parameter) {
+        return this.doOneField(name, parameter, null);
     }
 
 
@@ -261,9 +253,9 @@ public final class Mirror<T> {
      * @param <C>               属性类型
      * @return 本身
      */
-    public <C> MirrorField<T, C> doOneField(String name, ThrowableFunction throwableFunction, C parameter) {
+    public <C> MirrorField<T> doOneField(String name, C parameter, ThrowableFunction throwableFunction) {
         Objects.requireNonNull(name, "方法名称不能为空");
-        MirrorField<T, C> mirrorField = null;
+        MirrorField<T> mirrorField = null;
         try {
             mirrorField = MirrorField.of(this.type, this, name, parameter);
         } catch (Exception e) {
@@ -298,11 +290,11 @@ public final class Mirror<T> {
      * @param <C>       class的类型
      * @return 一个包装MirrorField的集合
      */
-    public <C> List<MirrorField<T, C>> withTypeField(Class<C> fieldType) {
+    public <C> List<MirrorField<T>> withTypeField(Class<C> fieldType) {
         final Field[] fields = typeClass.getDeclaredFields();
-        List<MirrorField<T, C>> mirrorFields = new ArrayList<>();
+        List<MirrorField<T>> mirrorFields = new ArrayList<>();
         for (Field field : fields) {
-            MirrorField<T, C> mirrorField = new MirrorField<>(this.type, this, field);
+            MirrorField<T> mirrorField = new MirrorField<>(this.type, this, field);
             if (mirrorField.eqFieldType(fieldType)) {
                 mirrorFields.add(mirrorField);
             }

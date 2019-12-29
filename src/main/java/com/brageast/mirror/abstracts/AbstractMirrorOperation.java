@@ -1,10 +1,9 @@
 package com.brageast.mirror.abstracts;
 
 import com.brageast.mirror.Mirror;
-import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.function.InvokeFunction;
+import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.reflect.MirrorField;
-import com.brageast.mirror.util.ClassUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -150,12 +149,12 @@ public abstract class AbstractMirrorOperation<T, M extends AccessibleObject, C> 
         return this;
     }
 
-    protected <M, H> void onMirrorFieldAnnotation(Object invObj, MirrorField<M, H> mirrorField) {
+    protected <M> void onMirrorFieldAnnotation(Object invObj, MirrorField<M> mirrorField) {
         Class<M> declaringClass = (Class<M>) mirrorField.getTarget().getType();
         Annotation annotation = this.annotationHashMap.get(declaringClass);
         if (annotation != null) {
-            mirrorField.doParameter((H) annotation);
-            mirrorField.invoke(invObj, (ToValueFunction<H>) null);
+            mirrorField.doParameter(annotation);
+            mirrorField.invoke(invObj, (ToValueFunction<Object>) null);
         }
     }
 

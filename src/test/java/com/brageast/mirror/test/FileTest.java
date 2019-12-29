@@ -1,6 +1,8 @@
 package com.brageast.mirror.test;
 
 import com.brageast.mirror.MirrorFile;
+import com.brageast.mirror.function.SimpleFunction;
+import com.brageast.mirror.util.RunTimeUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,17 +29,20 @@ public class FileTest {
     }
 
     public static void main(String[] args) throws Exception {
-        /*jarClassLoader.addURL(file.toURI().toURL());
-        Class<?> aClass = Class.forName("org.dom4j.bean.BeanAttribute", false, jarClassLoader);
+        SimpleFunction simpleFunction = () -> {
+            MirrorFile scan = MirrorFile.scan("D:\\Downloads\\dom4j-2.1.1.jar");
+            scan.loadClassWhithMirror("org.dom4j.util.NonLazyElement")
+                    .doConstructor("div")
+                    .notUseDeclared().off()
+                    .newInstance()
+                    .doOneMethod("toString")
+                    .notUseDeclared()
+                    .invoke(System.out::println);
+        };
+        long test = RunTimeUtil.test(simpleFunction);
+        System.out.println("运行时间为: L" + test);
 
-        System.out.println(aClass);*/
-        MirrorFile scan = MirrorFile.scan("D:\\Downloads\\dom4j-2.1.1.jar");
-        scan.loadClassWhithMirror("org.dom4j.util.NonLazyElement")
-                .doConstructor("哈哈").off()
-                .newInstance()
-                .doOneMethod("toString")
-                .notUseDeclared()
-                .invoke(System.out::print);
+
     }
 
 

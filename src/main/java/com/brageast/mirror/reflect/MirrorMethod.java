@@ -2,13 +2,13 @@ package com.brageast.mirror.reflect;
 
 import com.brageast.mirror.Mirror;
 import com.brageast.mirror.abstracts.AbstractMirrorOperation;
+import com.brageast.mirror.exception.ProhibitedUseException;
 import com.brageast.mirror.function.InvokeFunction;
 import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.interfaces.MirrorOperation;
 import com.brageast.mirror.util.ClassUtil;
 
-import java.awt.print.PrinterAbortException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -161,8 +161,8 @@ public class MirrorMethod<T, C> extends AbstractMirrorOperation<T, Method, C> im
     @Deprecated
     public C getValue() {
         try {
-            throw new PrinterAbortException("请使用invoke方法获取value");
-        } catch (PrinterAbortException e) {
+            throw new ProhibitedUseException("请使用invoke方法获取value");
+        } catch (ProhibitedUseException e) {
             e.printStackTrace();
         }
         return null;

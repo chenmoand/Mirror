@@ -1,8 +1,11 @@
 package com.brageast.mirror.test;
 
-import java.io.File;
+import com.brageast.mirror.Mirror;
+import com.brageast.mirror.entity.Convert;
+
 import java.net.MalformedURLException;
-import java.net.URL;
+
+import static com.brageast.mirror.entity.Convert.conver;
 
 public class Test {
     public static void main(String[] args) throws MalformedURLException {
@@ -13,8 +16,13 @@ public class Test {
         Mirror.just(myUser)
                 .doOneMethod("getAge")
                 .invoke(System.out::print);*/
-        File file = new File("D:\\private\\mirror\\target\\mirror-1.8.jar");
-        URL url = file.toURI().toURL();
-        System.out.println(url.getPath());
+        MyUser myUser = new MyUser();
+        Object dog = Mirror.just(myUser)
+                .doOneField("dog", conver(18))
+//                .notUseDeclared()
+                .off()
+                .getValue();
+        System.out.println((Integer) dog);
+        System.out.println(myUser);
     }
 }

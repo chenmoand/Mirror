@@ -5,81 +5,86 @@ import com.brageast.mirror.Mirror;
 import com.brageast.mirror.entity.Convert;
 import com.brageast.mirror.entity.Null;
 import com.brageast.mirror.function.InvokeFunction;
+import com.brageast.mirror.function.SimpleFunction;
+import com.brageast.mirror.util.RunTimeUtil;
 
 import java.lang.reflect.Field;
 
 public class MirrorTest {
     public static void main(String[] args) {
-        User user = new User();
-        Mirror.just(user)
-                .defaultOffAll()
-                .doOneField("name", Null.isNull(String.class))
-                .invoke();
-        Mirror.just(user)
-                .withReturnTypeMethod(String.class)
-                .forEach(mm -> mm.invoke(System.out::println));
+        SimpleFunction simpleFunction = () -> {
 
-        Mirror.just(user)
-                .defaultOffAll()
-                .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
-                .forEach(mirrorField ->
-                        mirrorField.invoke(new InvokeFunction() {
-                            private Boom boom; // 自动将上面筛选的注解实例注入
+            User user = new User();
+            Mirror.just(user)
+                    .defaultOffAll()
+                    .doOneField("name", Null.isNull(String.class))
+                    .invoke();
+            Mirror.just(user)
+                    .withReturnTypeMethod(String.class)
+                    .forEach(mm -> mm.invoke(System.out::println));
 
-                            @Override
-                            public Object onFieldModify(Object entity) {
-                                System.out.println(boom);
-                                return boom.value();
-                            }
+            Mirror.just(user)
+                    .defaultOffAll()
+                    .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
+                    .forEach(mirrorField ->
+                            mirrorField.invoke(new InvokeFunction() {
+                                private Boom boom; // 自动将上面筛选的注解实例注入
 
-                            @Override
-                            public void onModifyResult(Object entity) {
-                                System.out.println(entity);
-                            }
-                        }));
+                                @Override
+                                public Object onFieldModify(Object entity) {
+                                    System.out.println(boom);
+                                    return boom.value();
+                                }
 
-        Mirror.just(user)
-                .doOneMethod("setName", "java")
-                .invoke();
+                                @Override
+                                public void onModifyResult(Object entity) {
+                                    System.out.println(entity);
+                                }
+                            }));
 
-
-        User user1 = Mirror.just(user)
-                .doConstructor("兰陵王", Convert.conver(16), "女") // 预操作
-                .newInstance() // 实例化这个
-                .getInstance(); // 获得这个实例
-
-        Mirror.just(user)
-                .withReturnTypeMethod(String.class);
-
-        System.out.println(user1);
+            Mirror.just(user)
+                    .doOneMethod("setName", "java")
+                    .invoke();
 
 
-        Mirror.just(user)
-                .defaultOffAll();
+            User user1 = Mirror.just(user)
+                    .doConstructor("兰陵王", Convert.conver(16), "女") // 预操作
+                    .newInstance() // 实例化这个
+                    .getInstance(); // 获得这个实例
 
-        Mirror.just(user)
-                .withTypeField(String.class);
+            Mirror.just(user)
+                    .withReturnTypeMethod(String.class);
 
-        Mirror.just(user)
-                .doOneMethod("setName")
-                .doParameter("hhaha")
-                .doAnnotations(Boom.class)
-                .invoke(new InvokeFunction() {
-                    private Boom boom;
+            System.out.println(user1);
 
-                    @Override
-                    public Object[] onMethodModify(Object[] parameters) {
-                        return new Object[]{parameters[0] + boom.value()};
-                    }
 
-                    @Override
-                    public void onModifyResult(Object entity) {
-                        System.out.println(entity); //得到返回
-                    }
-                });
-        System.out.println(user);
-        System.out.println(int[].class);
+            Mirror.just(user)
+                    .defaultOffAll();
 
+            Mirror.just(user)
+                    .withTypeField(String.class);
+
+            Mirror.just(user)
+                    .doOneMethod("setName")
+                    .doParameter("hhaha")
+                    .doAnnotations(Boom.class)
+                    .invoke(new InvokeFunction() {
+                        private Boom boom;
+
+                        @Override
+                        public Object[] onMethodModify(Object[] parameters) {
+                            return new Object[]{parameters[0] + boom.value()};
+                        }
+
+                        @Override
+                        public void onModifyResult(Object entity) {
+                            System.out.println(entity); //得到返回
+                        }
+                    });
+            System.out.println(user);
+            System.out.println(int[].class);
+        };
+        System.out.println("运行时间为: L" + RunTimeUtil.test(simpleFunction));
     }
 
     public void test() throws Exception {
