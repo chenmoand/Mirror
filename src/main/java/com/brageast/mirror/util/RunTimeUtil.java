@@ -4,6 +4,7 @@ import com.brageast.mirror.function.SimpleFunction;
 
 /**
  * 运行代码测试时间工具
+ * 似乎并不准, 娱乐工具类
  *
  */
 public class RunTimeUtil {

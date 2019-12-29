@@ -25,10 +25,9 @@ public class MirrorType<T> {
     }
 
     public MirrorType<T> doClassType(FilterFunction<Class<T>> filterFunction, ToValueFunction<Mirror<T>> toValueFunction) {
-
         if (
-                filterFunction != null &&
-                        filterFunction.doFilter(tClass)
+            filterFunction != null &&
+            filterFunction.doFilter(tClass)
         ) {
             if (toValueFunction != null) toValueFunction.toValue(mirror);
         }

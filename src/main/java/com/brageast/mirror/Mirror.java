@@ -67,15 +67,24 @@ public final class Mirror<T> {
 
     }
 
+    /**
+     * 使用默认构造器构建
+     *
+     * @return
+     */
+    public Mirror<T> defaultConstructor() {
+        return this.doConstructor().newInstance();
+    }
+
 
     /**
      * 返回一个Mirror类
      *
-     * @param aclass
+     * @param typeClass
      * @param type
      */
-    public Mirror(Class<T> aclass, T type) {
-        this.typeClass = aclass;
+    private Mirror(Class<T> typeClass, T type) {
+        this.typeClass = typeClass;
         this.type = type;
     }
 
