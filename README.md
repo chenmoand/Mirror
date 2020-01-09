@@ -1,4 +1,4 @@
-# com.brageast.KMirror.Mirror - 方便的反射工具
+# com.brageast.kmirror.Mirror - 方便的反射工具
 
 > 用最少的操作完成你想要的结果
 
@@ -6,7 +6,7 @@
 
 * 方法一
 
-  ```git clone https://github.com/chenmoand/com.brageast.KMirror.Mirror.git```
+  ```git clone https://github.com/chenmoand/git```
 
 * 方法二 (暂时不可用
 
@@ -32,7 +32,7 @@ User user = new User();
 操作```User.class```的构造器
 
 ```java
-User user1 = com.brageast.KMirror.Mirror.just(user)
+User user1 = just(user)
     .doConstructor("兰陵王", Convert.conver(16), "女") // 预操作
     .newInstance() // 实例化这个
     // .off() 如果是私有的请打开off()
@@ -42,7 +42,7 @@ User user1 = com.brageast.KMirror.Mirror.just(user)
 操作```user```的一个属性
 
 ```java
-com.brageast.KMirror.Mirror.just(user) // 传入的实例对象
+just(user) // 传入的实例对象
     .doOneField("name", "哈哈哈") //操作一个属性
     // .off() 如果是私有的请打开off()
     .invoke(); // 执行
@@ -51,7 +51,7 @@ com.brageast.KMirror.Mirror.just(user) // 传入的实例对象
 操作```user```的一个方法
 
 ```java
-com.brageast.KMirror.Mirror.just(user)
+just(user)
     .doOneMethod("setName", "java") //获得一个方法
     // .off() 如果是私有的请打开off()
     .invoke(); // 执行
@@ -60,7 +60,7 @@ com.brageast.KMirror.Mirror.just(user)
 方法返回值为```String.class```的集合
 
 ```java
-com.brageast.KMirror.Mirror.just(user)
+just(user)
     .withReturnTypeMethod(String.class); 
 //返回一个List 数组 可以通过forEach操作
 ```
@@ -68,21 +68,21 @@ com.brageast.KMirror.Mirror.just(user)
 无视掉所有权限, 不管是构造器还是方法或者属性
 
 ```java
-com.brageast.KMirror.Mirror.just(user)
+just(user)
     .defaultOffAll(); //相当于为每个都执行off()操作
 ```
 
 获得所有属性类型是```String.class```的属性
 
 ```java
-com.brageast.KMirror.Mirror.just(user)
+just(user)
     .withTypeField(String.class); //返回一个List
 ```
 
 属性注解操作
 
 ```java
-com.brageast.KMirror.Mirror.just(user)
+just(user)
     .defaultOffAll() // 关闭所有权限验证
     .allField(userObjectMirrorField -> userObjectMirrorField.hasAnntation(Boom.class))
     .forEach(mirrorField ->
@@ -105,7 +105,7 @@ com.brageast.KMirror.Mirror.just(user)
 方法注解操作
 
 ```java
-com.brageast.KMirror.Mirror.just(user)
+just(user)
     .doOneMethod("setName") // 预处理 setName
     .doParameter("hhaha") // 处理参数
     .doAnnotations(Boom.class) // 找到Boom注解

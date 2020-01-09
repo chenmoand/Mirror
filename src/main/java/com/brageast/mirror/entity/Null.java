@@ -3,12 +3,12 @@ package com.brageast.mirror.entity;
 /**
  * 用于转换一个Null
  * 例如:
- *      com.brageast.KMirror.Mirror.just(User.Class)
+ *      com.brageast.kmirror.Mirror.just(User.Class)
  *          .doOneMethod("setAge", null);
  * 如果不用会导致他会匹配一个setAge()的方法
  * 而不会找setAge(int i)这个方法
  * 正确方法:
- *      com.brageast.KMirror.Mirror.just(User.Class)
+ *      com.brageast.kmirror.Mirror.just(User.Class)
  *          .doOneMethod("setAge", Null.isNull(int.class));
  * 提示:
  *      可以使用import static com.brageast.mirror.entity.Null.isNull;

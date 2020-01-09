@@ -115,7 +115,7 @@ public final class Mirror<T> {
      * 实例化一个Mirror反射类
      *
      * @param url 反射类的地址
-     * @return com.brageast.KMirror.Mirror<?>类
+     * @return com.brageast.kmirror.Mirror<?>类
      */
     public static Mirror<?> just(String url) {
         return just(url, null);
@@ -126,7 +126,7 @@ public final class Mirror<T> {
      *
      * @param url               反射类的地址
      * @param throwableFunction 遇到异常的解决方式
-     * @return com.brageast.KMirror.Mirror<?>
+     * @return com.brageast.kmirror.Mirror<?>
      */
     public static Mirror<?> just(String url, ThrowableFunction throwableFunction) {
         Mirror<?> mirror = null;
