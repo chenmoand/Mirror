@@ -8,6 +8,7 @@ import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.abstracts.AbstractMirrorOperation;
 import com.brageast.mirror.interfaces.MirrorOperation;
 import com.brageast.mirror.util.ClassUtil;
+import com.brageast.mirror.util.ValueUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

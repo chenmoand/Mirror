@@ -5,6 +5,7 @@ import com.brageast.mirror.function.ThrowableFunction;
 import com.brageast.mirror.function.ToValueFunction;
 import com.brageast.mirror.abstracts.AbstractMirrorOperation;
 import com.brageast.mirror.util.ClassUtil;
+import com.brageast.mirror.util.ValueUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -34,12 +35,12 @@ public class MirrorConstructor<T> extends AbstractMirrorOperation<T, Constructor
      */
     public MirrorConstructor(Constructor<T> target) {
         super(target);
-
     }
 
-    public MirrorConstructor(Class<T> tClass, Mirror mirror, Object[] parameters) {
+    public MirrorConstructor(Class<T> tClass, Mirror<T> mirror, Object[] parameters) {
         this.tClass = tClass;
-        this.mirror = (mirror == null ? Mirror.just(tClass) : mirror);
+        this.mirror = ValueUtil.of(mirror)
+                        .beforeIsNull(Mirror.just(tClass));
         doParameter(parameters);
     }
 

@@ -3,12 +3,12 @@ package com.brageast.mirror.entity;
 /**
  * 用于转换一个基本类型
  * 例如:
- *      Mirror.just(User.Class)
+ *      com.brageast.KMirror.Mirror.just(User.Class)
  *          .doOneMethod("setAge", 12);
  * 如果不使用Convert 会把12 解析成 Integer.class类型
  * 而方法是普通得int.class ,会导致找不到方法
  * 正确方法:
- *      Mirror.just(User.Class)
+ *      com.brageast.KMirror.Mirror.just(User.Class)
  *          .doOneMethod("setAge", Convert.cover(12));
  * 提示:
  *      可以使用import static com.brageast.mirror.util.Covert.cover;
