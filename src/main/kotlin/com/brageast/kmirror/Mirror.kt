@@ -2,12 +2,13 @@ package com.brageast.kmirror
 
 import kotlin.reflect.KClass
 
-class Mirror<T: Any> {
+class Mirror<T : Any> {
     /**
      * 操作的实例
      */
-    private var instance: T? = null
-        get() = instance
+    var instance: T? = null
+        private set
+
     /**
      * 实例的对象的类
      */
@@ -16,40 +17,54 @@ class Mirror<T: Any> {
     constructor(instanceClass: Class<T>) {
         this.instanceClass = instanceClass
     }
+
     constructor(instance: T) {
         this.instance = instance
         this.instanceClass = instance.javaClass
     }
 
+    var checkPermissions: Boolean = true
+        @JvmName("isCheckPermissions") get
+        private set
+
+    fun closeCheck(): Mirror<T> = Back {
+        checkPermissions = false
+    }
+
+    var useDeclared: Boolean = true
+        @JvmName("isUseDeclared") get
+        private set
+
+    fun notUserDeclared(): Mirror<T> = Back {
+        useDeclared = false
+    }
+
+
+    private fun Any.Back(): Mirror<T> = this@Mirror
+    private fun Any.Back(callback: () -> Unit): Mirror<T> = callback().Back()
+
     companion object {
-        private const val import: String = "com.brageast.kmirror.Mirror.Companion.toMirror"
-        private const val message: String = "please use toMirror()"
+        @JvmStatic
+        fun <E : Any> of(instance: E): Mirror<E> = Mirror(instance)
 
         @JvmStatic
-        @Deprecated(
-                message = message,
-                replaceWith = ReplaceWith("instance.toMirror()", import)
-        )
-        fun <E: Any> of(instance: E): Mirror<E> = Mirror(instance)
+        fun <E : Any> of(instanceClass: Class<E>): Mirror<E> = Mirror(instanceClass)
+
+        fun <E : Any> of(instanceKClass: KClass<E>): Mirror<E> = Mirror(instanceKClass.java)
+
         @JvmStatic
-        @Deprecated(
-                message = message,
-                replaceWith = ReplaceWith("instanceClass.toMirror()", import)
-        )
-        fun <E: Any> of(instanceClass: Class<E>): Mirror<E> = Mirror(instanceClass)
-        @Deprecated(
-                message = message,
-                replaceWith = ReplaceWith("instanceKClass.toMirror()", import)
-        )
-        fun <E: Any> of(instanceKClass: KClass<E>): Mirror<E> = Mirror(instanceKClass.java)
-        inline fun <reified E: Any> of(): Mirror<E> = Mirror(instanceClass = E::class.java)
+        @JvmOverloads
+        fun of(url: String, throwableCallBack: (Throwable) -> Unit = CallBack.throwableCallBack): Mirror<out Any> {
+            var mirror: Mirror<out Any>? = null
+            try {
+                mirror = Mirror(Class.forName(url))
+            } catch (e: ClassNotFoundException) {
+                throwableCallBack(e)
+            }
+            return mirror!!
+        }
 
-
-        fun <E: Any> E.toMirror() = Mirror(this)
-
-        fun <E: Any> Class<E>.toMirror() = Mirror(this)
-
-        fun <E: Any> KClass<E>.toMirror() = Mirror(instanceClass = this.java)
+        inline fun <reified E : Any> of(): Mirror<E> = Mirror(instanceClass = E::class.java)
     }
 
 }
