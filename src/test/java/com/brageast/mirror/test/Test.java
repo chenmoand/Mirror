@@ -1,13 +1,20 @@
 package com.brageast.mirror.test;
 
 
-import com.brageast.kmirror.Mirror;
-
-import java.util.Arrays;
-
 public class Test {
-    public static void main(String[] args) {
-        Mirror.of(args);
+    private String str = "sad";
+
+    public static void main(String[] args) throws Exception {
+
+//        System.out.println(ReflectionUtil.findConcreteMethodsOnInterfaces(ArrayList.class));
+        Test.class.getDeclaredMethod("defaultValue").invoke(null);
     }
 
+    public static void defaultValue() {
+        System.out.println("hhaha");
+    }
+
+}
+
+interface Demo {
 }
